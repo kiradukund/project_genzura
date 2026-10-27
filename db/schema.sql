@@ -1,0 +1,1 @@
+-- Genzura database schema goes here
