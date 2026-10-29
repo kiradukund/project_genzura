@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -6,6 +8,7 @@ from dotenv import load_dotenv
 def create_app():
     load_dotenv()
     app = Flask(__name__)
+    app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-only-change-me")
     CORS(app)
 
     from .routes import api_bp
