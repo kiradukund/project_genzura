@@ -1,1 +1,1 @@
-# PostgreSQL connection helpers go here
+# Chol will implement the database connection here.

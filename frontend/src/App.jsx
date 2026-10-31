@@ -1,19 +1,41 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Header from "./components/Header.jsx";
+import OfferForm from "./components/OfferForm.jsx";
+import RiskResult from "./components/RiskResult.jsx";
+import { checkOffer } from "./api/client.js";
+import "./styles.css";
 
 export default function App() {
-  const [status, setStatus] = useState("Checking API...");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetch("/health")
-      .then((res) => res.json())
-      .then((data) => setStatus(data.status))
-      .catch(() => setStatus("API not reachable"));
-  }, []);
+  async function handleSubmit(text, context) {
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const data = await checkOffer(text, context);
+      setResult(data);
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-      <h1>Genzura</h1>
-      <p>{status}</p>
+    <div className="app">
+      <Header />
+      <main className="main">
+        <OfferForm onSubmit={handleSubmit} loading={loading} />
+        {error && (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        )}
+        {result && <RiskResult result={result} />}
+      </main>
     </div>
   );
 }
