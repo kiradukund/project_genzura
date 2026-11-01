@@ -1,1 +1,179 @@
-{}
+{
+  "title": "Suzuma mbere yo kwishyura",
+  "subtitle": "Genzura amatangazo y'akazi, buruse na viza byo hanze y'igihugu wirinde uburiganya",
+  "language": "Ururimi",
+  "nav": {
+    "label": "Ibikubiyemo",
+    "menu": "Fungura ibikubiyemo",
+    "how": "Uko bikora",
+    "check": "Suzuma itangazo",
+    "signs": "Ibimenyetso",
+    "report": "Tanga raporo"
+  },
+  "home": {
+    "cta": "Suzuma itangazo nonaha",
+    "trust": "Ni ubuntu · Ibanga ryawe rirarinzwe · Igisubizo mu masegonda",
+    "stepsTitle": "Uko bikora",
+    "steps": {
+      "1": {
+        "title": "Shyiramo itangazo",
+        "body": "Koporora ubutumwa bwa WhatsApp cyangwa imeli, cyangwa ushyireho ifoto yabwo. Hitamo akazi, buruse cyangwa viza."
+      },
+      "2": {
+        "title": "Menya urugero rw'ibyago mu masegonda",
+        "body": "Genzura isuzuma itangazo ishakisha ibimenyetso by'uburiganya bizwi, ikakwereka neza ibyo yabonye."
+      },
+      "3": {
+        "title": "Irinde",
+        "body": "Ntukishyure utabanje kugenzura. Tanga raporo kuri RIB kuri 166 cyangwa usabe ubufasha Umuhuzabikorwa w'Ikoranabuhanga."
+      }
+    },
+    "checkTitle": "Suzuma itangazo",
+    "signsTitle": "Ibyo Genzura ireba",
+    "signsIntro": "Ibimenyetso bikunze kugaragara mu matangazo y'ibinyoma yo hanze. Uko itangazo rifite ibimenyetso byinshi, ni ko ibyago byiyongera.",
+    "ribTitle": "Waba waramaze kwishyura, cyangwa uri guhatirwa kwishyura?",
+    "ribBody": "Hagarika kohereza amafaranga, maze utange raporo ku Rwego rw'Igihugu rw'Ubugenzacyaha (RIB)."
+  },
+  "offerType": {
+    "label": "Ni irihe tangazo wakiriye?",
+    "job": "Akazi",
+    "scholarship": "Buruse",
+    "visa": "Viza"
+  },
+  "form": {
+    "label": "Ubutumwa bw'itangazo",
+    "placeholder": "Shyira hano ubutumwa bwa WhatsApp cyangwa imeli...",
+    "check": "Suzuma ubu butumwa",
+    "checking": "Birimo gusuzumwa...",
+    "error": "Ntibyashobotse gusuzuma iri tangazo. Reba interineti yawe wongere ugerageze."
+  },
+  "upload": {
+    "button": "Shyiraho ifoto y'ubutumwa",
+    "hint": "Ifoto isomerwa kuri telefoni yawe, ntoherezwa ahandi.",
+    "reading": "Turimo gusoma ifoto...",
+    "tooBig": "Ifoto igomba kuba munsi ya MB 5.",
+    "notImage": "Hitamo ifoto.",
+    "noText": "Nta nyandiko ibonetse kuri iyi foto. Gerageza ifoto igaragara neza.",
+    "failed": "Ntibyashobotse gusoma iyi foto. Ongera ugerageze cyangwa wandike ubutumwa."
+  },
+  "risk": {
+    "high_risk": "IBYAGO BYINSHI",
+    "suspicious": "IBYAGO BIRINGANIYE",
+    "low_risk": "IBYAGO BIKE"
+  },
+  "explain": {
+    "high_risk": "Birashoboka cyane ko ari uburiganya. Ntukishyure kandi ntutange ibyangombwa byawe.",
+    "suspicious": "Witonde! Hari ibimenyetso by'uburiganya byabonetse. Banza ugenzure mbere yo kwishyura cyangwa gutanga ikintu icyo ari cyo cyose.",
+    "low_risk": "Nta bimenyetso bikomeye by'uburiganya byabonetse. Ariko banza ugenzure ikigo unyuze ku nzego zemewe."
+  },
+  "score": "Urugero rw'ibyago",
+  "flagsTitle": "Ibimenyetso by'uburiganya byabonetse",
+  "noFlags": "Nta bimenyetso by'uburiganya byabonetse.",
+  "flags": {
+    "upfront_fee": "Barasaba kwishyura amafaranga mbere",
+    "guaranteed_outcome": "Baguhamiriza viza, akazi cyangwa buruse 100%",
+    "urgency_pressure": "Barakwihutisha ngo udatekereza",
+    "free_email_contact": "Bakoresha imeli rusange (nka gmail.com) aho gukoresha iy'ikigo",
+    "chat_app_only": "Bavugana nawe kuri WhatsApp cyangwa Telegram gusa",
+    "sensitive_info_request": "Basaba pasiporo, indangamuntu cyangwa PIN mbere y'igihe",
+    "blacklisted_entity": "Havugwamo ikigo cyangwa umuntu uzwiho uburiganya",
+    "flagged_entity": "Havugwamo ikigo cyangwa umuntu ukekwaho uburiganya"
+  },
+  "nextSteps": "Icyo wakora ubu",
+  "actions": {
+    "reportRib": "Tanga raporo kuri RIB (166)",
+    "findAmbassador": "Shaka Umuhuzabikorwa w'Ikoranabuhanga",
+    "ambassadorTitle": "Abahuzabikorwa b'Ikoranabuhanga",
+    "ambassadorEmpty": "Urutonde rw'abahuzabikorwa ruzaboneka vuba. Hagati aho, hamagara RIB kuri 166 bagufashe.",
+    "close": "Funga"
+  },
+  "sms": {
+    "label": "Ohereza igisubizo kuri telefoni yanjye",
+    "placeholder": "07X XXX XXXX",
+    "send": "Ohereza",
+    "sending": "Birimo koherezwa...",
+    "sent": "Byoherejwe. Reba ubutumwa bwawe.",
+    "invalid": "Andika nimero ya telefoni yo mu Rwanda yemewe.",
+    "failed": "Ntibyashobotse kohereza SMS. Uzongere ugerageze nyuma."
+  },
+  "samples": {
+    "label": "Gerageza urugero:",
+    "job": "Uburiganya bw'akazi",
+    "scholarship": "Uburiganya bwa buruse",
+    "visa": "Uburiganya bwa viza"
+  },
+  "share": {
+    "whatsapp": "Sangiza kuri WhatsApp",
+    "copy": "Koporora igisubizo",
+    "copied": "Byakoporowe",
+    "intro": "Genzura yasuzumye itangazo:",
+    "flags": "Ibimenyetso by'uburiganya:",
+    "outro": "Suzuma amatangazo mbere yo kwishyura:"
+  },
+  "channels": {
+    "title": "Koresha Genzura uko ubishaka",
+    "intro": "Yagenewe telefoni zose, kuva ku zigezweho kugeza ku zisanzwe.",
+    "available": "Iraboneka ubu",
+    "soon": "Iraza vuba",
+    "web": {
+      "title": "Urubuga",
+      "body": "Shyiramo ubutumwa cyangwa ifoto yabwo, ubone igisubizo mu masegonda."
+    },
+    "ussd": {
+      "title": "USSD",
+      "body": "Kanda kode ngufi kuri telefoni iyo ari yo yose, nta interineti ikenewe, ubone igisubizo kuri ekarani."
+    },
+    "sms": {
+      "title": "SMS",
+      "body": "Akira igisubizo mu butumwa bugufi ushobora kubika no kwereka abandi."
+    }
+  },
+  "faq": {
+    "title": "Ibibazo bikunze kubazwa",
+    "items": {
+      "1": {
+        "q": "Gukoresha Genzura ni ubuntu?",
+        "a": "Yego. Gusuzuma itangazo nta kiguzi bisaba."
+      },
+      "2": {
+        "q": "Ifoto n'ubutumwa byanjye bigenda bite?",
+        "a": "Amafoto asomerwa kuri telefoni yawe kandi ntoherezwa ahandi. Inyandiko y'itangazo irasuzumwa ikabikwa nta makuru bwite arimo nka nimero za telefoni cyangwa imeli, kugira ngo inzego zibishinzwe zibone uko uburiganya buhagaze zitamenye uwo uri we."
+      },
+      "3": {
+        "q": "Niba igisubizo ari IBYAGO BIKE, itangazo riba ryizewe?",
+        "a": "Si ngombwa. Nta gikoresho gishobora kwizera 100%. IBYAGO BIKE bivuze ko nta bimenyetso bikomeye by'uburiganya byabonetse. Buri gihe banza ugenzure ikigo unyuze ku nzego zemewe mbere yo kwishyura cyangwa gutanga ibyangombwa."
+      },
+      "4": {
+        "q": "Ni ayahe matangazo nshobora gusuzuma?",
+        "a": "Amatangazo y'akazi, buruse na viza, cyane cyane ay'amahirwe yo hanze y'igihugu wakiriye kuri WhatsApp, SMS, imeli cyangwa imbuga nkoranyambaga."
+      },
+      "5": {
+        "q": "Nta telefoni igezweho mfite. Nshobora kuyikoresha?",
+        "a": "Hari gukorwa uburyo bwa USSD na SMS kuri telefoni zisanzwe, kugira ngo buri wese abashe gusuzuma itangazo nta interineti."
+      },
+      "6": {
+        "q": "Naramaze kwishyura. Nakora iki?",
+        "a": "Hagarika kohereza amafaranga, ubike ubutumwa bwose n'inyemezabwishyu, maze utange raporo ku Rwego rw'Igihugu rw'Ubugenzacyaha (RIB) kuri 166 vuba bishoboka."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Dufasha urubyiruko rwo mu Rwanda gusuzuma amatangazo y'akazi, buruse na viza byo hanze mbere yo kwishyura.",
+    "explore": "Ibirimo",
+    "help": "Saba ubufasha",
+    "faq": "Ibibazo",
+    "rib": "Urwego rw'Igihugu rw'Ubugenzacyaha",
+    "privacy": "Amafoto yawe ntava kuri telefoni yawe. Amakuru bwite akurwamo mbere y'uko hagira ikibikwa.",
+    "rights": "Uburenganzira bwose burasigasiwe.",
+    "made": "Byakorewe mu Rwanda",
+    "top": "Subira hejuru"
+  },
+  "directory": {
+    "title": "Urutonde rw'ibigo byemewe byo kugenzura amakuru",
+    "intro": "Vugana n'ibi bigo byemewe kugira ngo ugenzure amakuru, utange raporo y'uburiganya cyangwa ubone ubufasha.",
+    "search": "Shakisha...",
+    "verified": "Byemejwe",
+    "lastVerified": "Byagenzuwe bwa nyuma",
+    "empty": "Nta kigo kibonetse."
+  }
+}
