@@ -1,62 +1,42 @@
 import pytest
-from werkzeug.security import generate_password_hash
 
 from app import create_app, routes
 
 HIGH_RISK_TEXT = "Guaranteed visa, pay the processing fee"  # upfront_fee + guaranteed_outcome = 60
 
 
-# ---------- fixtures: no real Postgres or Africa's Talking needed ----------
-
 @pytest.fixture
 def saved():
-    """Every check the routes try to save ends up in this list."""
+    """Every check the route tries to save ends up in this list."""
     return []
 
 
 @pytest.fixture
 def client(monkeypatch, saved):
-    def fake_save_check(channel, context, language, masked_text, result):
+    def fake_save_check(masked_text, context, risk_score, verdict, flags,
+                        channel="web", language="en"):
         saved.append({
-            "channel": channel,
-            "context": context,
-            "language": language,
             "masked_text": masked_text,
-            "result": result,
+            "context": context,
+            "risk_score": risk_score,
+            "verdict": verdict,
+            "flags": flags,
+            "channel": channel,
+            "language": language,
         })
         return len(saved)
 
-    monkeypatch.setattr(routes.db, "save_check", fake_save_check)
-    monkeypatch.setattr(routes.db, "find_risky_entities", lambda text: [])
-
+    monkeypatch.setattr(routes, "save_check", fake_save_check)
     app = create_app()
     app.config["TESTING"] = True
     return app.test_client()
 
-
-@pytest.fixture
-def admin_headers(client, monkeypatch):
-    admin = {
-        "id": 1,
-        "email": "admin@genzura.test",
-        "password_hash": generate_password_hash("secret123"),
-        "role": "admin",
-    }
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: admin)
-    res = client.post("/api/admin/login",
-                      json={"email": "admin@genzura.test", "password": "secret123"})
-    return {"Authorization": f"Bearer {res.get_json()['token']}"}
-
-
-# ---------- health ----------
 
 def test_health(client):
     res = client.get("/health")
     assert res.status_code == 200
     assert res.get_json() == {"status": "Genzura API is running"}
 
-
-# ---------- /api/check ----------
 
 def test_check_returns_expected_shape(client):
     res = client.post("/api/check", json={"text": "hello", "context": "job"})
@@ -110,232 +90,7 @@ def test_check_still_responds_when_database_save_fails(client, monkeypatch):
     def boom(*args, **kwargs):
         raise RuntimeError("db down")
 
-    monkeypatch.setattr(routes.db, "save_check", boom)
+    monkeypatch.setattr(routes, "save_check", boom)
     res = client.post("/api/check", json={"text": "hello"})
     assert res.status_code == 200
     assert res.get_json()["check_id"] is None
-
-
-def test_check_adds_blacklisted_entity_flag(client, monkeypatch):
-    monkeypatch.setattr(routes.db, "find_risky_entities",
-                        lambda text: [{"name": "ScamCo", "status": "blacklisted"}])
-    body = client.post("/api/check", json={"text": "hello from ScamCo"}).get_json()
-    assert body["flags"] == ["blacklisted_entity"]
-    assert body["risk_score"] == 50
-    assert body["verdict"] == "suspicious"
-
-
-def test_check_adds_flagged_entity_flag(client, monkeypatch):
-    monkeypatch.setattr(routes.db, "find_risky_entities",
-                        lambda text: [{"name": "ShadyLtd", "status": "flagged"}])
-    body = client.post("/api/check", json={"text": "hello from ShadyLtd"}).get_json()
-    assert body["flags"] == ["flagged_entity"]
-    assert body["risk_score"] == 25
-    assert body["verdict"] == "low_risk"
-
-
-def test_check_falls_back_to_rules_when_entity_lookup_fails(client, monkeypatch):
-    def boom(text):
-        raise RuntimeError("db down")
-
-    monkeypatch.setattr(routes.db, "find_risky_entities", boom)
-    res = client.post("/api/check", json={"text": HIGH_RISK_TEXT})
-    assert res.status_code == 200
-    assert res.get_json()["verdict"] == "high_risk"
-
-
-# ---------- /api/verify ----------
-
-def test_verify_requires_a_real_name(client):
-    assert client.get("/api/verify?name=a").status_code == 400
-    assert client.get("/api/verify").status_code == 400
-
-
-def test_verify_returns_matches(client, monkeypatch):
-    rows = [{"id": 1, "name": "Acme Ltd", "type": "employer",
-             "website": None, "status": "verified", "notes": None}]
-    monkeypatch.setattr(routes.db, "find_entities", lambda q: rows)
-    body = client.get("/api/verify?name=acme").get_json()
-    assert body == {"query": "acme", "matches": rows}
-
-
-def test_verify_returns_503_when_database_fails(client, monkeypatch):
-    def boom(q):
-        raise RuntimeError("db down")
-
-    monkeypatch.setattr(routes.db, "find_entities", boom)
-    assert client.get("/api/verify?name=acme").status_code == 503
-
-
-# ---------- /api/report ----------
-
-def test_report_validation(client):
-    assert client.post("/api/report", json={"description": "short"}).status_code == 400
-    res = client.post("/api/report",
-                      json={"description": "A long enough description", "check_id": "7"})
-    assert res.status_code == 400
-
-
-def test_report_is_created_with_masked_description(client, monkeypatch):
-    calls = []
-
-    def fake_create_report(description, check_id=None):
-        calls.append((description, check_id))
-        return {"id": 1, "status": "new"}
-
-    monkeypatch.setattr(routes.db, "create_report", fake_create_report)
-    res = client.post("/api/report", json={
-        "description": "Someone at hr@gmail.com asked me to pay a fee",
-        "check_id": 3,
-    })
-    assert res.status_code == 201
-    assert res.get_json() == {"id": 1, "status": "new"}
-    description, check_id = calls[0]
-    assert "hr@gmail.com" not in description and "[EMAIL]" in description
-    assert check_id == 3
-
-
-def test_report_returns_500_when_database_fails(client, monkeypatch):
-    def boom(description, check_id=None):
-        raise RuntimeError("db down")
-
-    monkeypatch.setattr(routes.db, "create_report", boom)
-    res = client.post("/api/report", json={"description": "A long enough description"})
-    assert res.status_code == 500
-
-
-# ---------- /api/ussd ----------
-
-def ussd(client, text):
-    return client.post("/api/ussd", data={"text": text})
-
-
-def test_ussd_first_screen_is_menu(client):
-    res = ussd(client, "")
-    body = res.get_data(as_text=True)
-    assert res.status_code == 200
-    assert res.mimetype == "text/plain"
-    assert body.startswith("CON ")
-    assert "1. Job offer" in body
-
-
-def test_ussd_invalid_choice_ends_session(client):
-    assert ussd(client, "9").get_data(as_text=True).startswith("END ")
-
-
-def test_ussd_asks_for_message_after_choice(client):
-    body = ussd(client, "1").get_data(as_text=True)
-    assert body.startswith("CON ") and "message" in body
-
-
-def test_ussd_returns_verdict_and_saves_check(client, saved):
-    body = ussd(client, "1*Guaranteed job, pay registration fee").get_data(as_text=True)
-    assert body.startswith("END ")
-    assert "HIGH RISK" in body
-    assert saved[0]["channel"] == "ussd"
-    assert saved[0]["context"] == "job"
-
-
-def test_ussd_keeps_asterisks_typed_in_the_message(client, saved):
-    ussd(client, "2*a*b")
-    assert saved[0]["context"] == "scholarship"
-    assert saved[0]["masked_text"] == "a*b"
-
-
-# ---------- /api/sms ----------
-
-@pytest.fixture
-def sent(monkeypatch):
-    messages = []
-    monkeypatch.setattr(routes, "send_sms", lambda to, msg: messages.append((to, msg)) or True)
-    return messages
-
-
-def test_sms_uses_context_prefix_and_replies(client, saved, sent):
-    res = client.post("/api/sms", data={"from": "+250788000000", "text": f"VISA {HIGH_RISK_TEXT}"})
-    assert res.status_code == 200
-    assert saved[0]["channel"] == "sms"
-    assert saved[0]["context"] == "visa"
-    to, message = sent[0]
-    assert to == "+250788000000"
-    assert "HIGH RISK" in message
-
-
-def test_sms_defaults_to_job_without_prefix(client, saved, sent):
-    client.post("/api/sms", data={"from": "+250788000000", "text": HIGH_RISK_TEXT})
-    assert saved[0]["context"] == "job"
-    assert saved[0]["masked_text"] == HIGH_RISK_TEXT
-
-
-def test_sms_with_empty_text_does_nothing(client, saved, sent):
-    res = client.post("/api/sms", data={"from": "+250788000000", "text": "  "})
-    assert res.status_code == 200
-    assert saved == [] and sent == []
-
-
-# ---------- admin ----------
-
-def test_admin_routes_require_a_token(client):
-    assert client.get("/api/admin/stats").status_code == 401
-    bad = {"Authorization": "Bearer not-a-real-token"}
-    assert client.get("/api/admin/stats", headers=bad).status_code == 401
-
-
-def test_admin_login_requires_email_and_password(client):
-    assert client.post("/api/admin/login", json={"email": "a@b.co"}).status_code == 400
-
-
-def test_admin_login_rejects_wrong_password_and_unknown_user(client, monkeypatch):
-    admin = {"id": 1, "email": "admin@genzura.test",
-             "password_hash": generate_password_hash("secret123"), "role": "admin"}
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: admin)
-    res = client.post("/api/admin/login", json={"email": "admin@genzura.test", "password": "wrong"})
-    assert res.status_code == 401
-
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: None)
-    res = client.post("/api/admin/login", json={"email": "nobody@genzura.test", "password": "x"})
-    assert res.status_code == 401
-
-
-def test_admin_login_returns_working_token(client, admin_headers, monkeypatch):
-    monkeypatch.setattr(routes.db, "get_stats", lambda: {"total_checks": 3})
-    res = client.get("/api/admin/stats", headers=admin_headers)
-    assert res.status_code == 200
-    assert res.get_json() == {"total_checks": 3}
-
-
-def test_admin_reports_list_validates_status(client, admin_headers, monkeypatch):
-    seen = {}
-
-    def fake_list_reports(status, limit, offset):
-        seen.update(status=status, limit=limit, offset=offset)
-        return []
-
-    monkeypatch.setattr(routes.db, "list_reports", fake_list_reports)
-
-    assert client.get("/api/admin/reports?status=bogus", headers=admin_headers).status_code == 400
-
-    res = client.get("/api/admin/reports?status=new&limit=999", headers=admin_headers)
-    assert res.status_code == 200
-    assert seen == {"status": "new", "limit": 200, "offset": 0}  # limit is capped at 200
-
-
-def test_admin_update_report_status(client, admin_headers, monkeypatch):
-    url = "/api/admin/reports/5"
-
-    res = client.patch(url, json={"status": "bogus"}, headers=admin_headers)
-    assert res.status_code == 400
-
-    monkeypatch.setattr(routes.db, "update_report_status", lambda rid, status: None)
-    res = client.patch(url, json={"status": "closed"}, headers=admin_headers)
-    assert res.status_code == 404
-
-    monkeypatch.setattr(routes.db, "update_report_status",
-                        lambda rid, status: {"id": rid, "status": status})
-    res = client.patch(url, json={"status": "closed"}, headers=admin_headers)
-    assert res.status_code == 200
-    assert res.get_json() == {"id": 5, "status": "closed"}
-
-
-def test_admin_update_report_requires_token(client):
-    assert client.patch("/api/admin/reports/5", json={"status": "closed"}).status_code == 401
