@@ -19,6 +19,11 @@ def test_date_not_redacted():
     assert result == "deadline is 2026-11-03"
 
 
+def test_unspaced_rw_phone_redacted():
+    assert redact("call 0788123456") == "call [PHONE]"
+    assert redact("call 250788123456") == "call [PHONE]"
+
+
 def test_normal_sentence_unchanged():
     text = "this offer looks suspicious"
     assert redact(text) == text

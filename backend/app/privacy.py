@@ -1,5 +1,8 @@
 import re
 
+# Rwandan unspaced numbers: 0788123456, 250788123456, +250788123456
+_RW_PHONE_RE = re.compile(r"(?:\+?250|\b0)7[2389]\d{7}\b")
+
 # Phone: must start with + or a digit followed by space/dash then more digits
 # Requires at least one space OR a leading + to avoid matching dates (2026-11-03)
 # e.g. +250 788 123 456, 0788 123 456 — but NOT 2026-11-03
@@ -15,6 +18,7 @@ _NAME_RE = re.compile(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b")
 
 def redact(text: str) -> str:
     text = _EMAIL_RE.sub("[EMAIL]", text)
+    text = _RW_PHONE_RE.sub("[PHONE]", text)
     text = _PHONE_RE.sub("[PHONE]", text)
     text = _NAME_RE.sub("[NAME]", text)
     return text
