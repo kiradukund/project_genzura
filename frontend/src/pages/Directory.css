@@ -1,7 +1,3 @@
-.directory h2 {
-  color: #0a192f;
-}
-
 .directory input[type="search"] {
   width: 100%;
   max-width: 480px;
@@ -18,6 +14,7 @@
   padding: 0;
   margin: 0;
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 }
 
