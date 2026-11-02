@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import { useI18n } from "../i18n";
 import useReveal from "../useReveal";
 import Checker from "./Checker";
+import Directory from "./Directory";
 
 const STEPS = ["1", "2", "3"];
 
@@ -114,6 +115,10 @@ export default function Home() {
               <li key={id}>{t(`flags.${id}`)}</li>
             ))}
           </ul>
+        </section>
+
+        <section id="directory" className="section reveal">
+          <Directory />
         </section>
 
         <section id="faq" className="section reveal" aria-labelledby="faq-title">

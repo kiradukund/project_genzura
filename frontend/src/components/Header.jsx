@@ -10,6 +10,7 @@ const NAV = [
   { id: "check", key: "nav.check" },
   { id: "signs", key: "nav.signs" },
   { id: "report", key: "nav.report" },
+  { id: "directory", key: "nav.directory" },
 ];
 
 // Highlight the menu link for the section currently on screen.
