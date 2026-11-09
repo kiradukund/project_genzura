@@ -1,4 +1,13 @@
 {
+  "alreadyPaid": {},
+  "trends": {},
+  "assess": {},
+  "auth": {},
+  "myChecks": {},
+  "admin": {},
+  "report": {},
+  "alerts": {},
+  "agencies": {},
   "appName": "Genzura",
   "title": "Check before you pay",
   "subtitle": "Verify overseas job offers, scholarships and visas to avoid scams",
