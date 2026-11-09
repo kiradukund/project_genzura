@@ -1,0 +1,1 @@
+-- OWNER: Abay - entities table for lookup

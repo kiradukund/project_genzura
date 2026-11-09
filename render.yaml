@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: genzura-api
+    runtime: python
+    plan: free
+    region: virginia
+    branch: dev
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.12.7
+  - type: web
+    name: genzura-web
+    runtime: static
+    branch: dev
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

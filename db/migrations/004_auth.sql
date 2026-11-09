@@ -1,0 +1,1 @@
+-- OWNER: Abay - users and otp_codes tables
