@@ -17,7 +17,6 @@ services:
   - type: web
     name: genzura-web
     runtime: static
-    region: virginia
     branch: dev
     rootDir: frontend
     buildCommand: npm ci && npm run build
@@ -29,4 +28,3 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
-       
