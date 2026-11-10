@@ -1,7 +1,8 @@
+# OWNER: Abay
 import pytest
 from werkzeug.security import generate_password_hash
 
-from app import create_app, routes
+from app import auth, create_app, lookup, routes
 
 HIGH_RISK_TEXT = "Guaranteed visa, pay the processing fee"  # upfront_fee + guaranteed_outcome = 60
 
@@ -28,6 +29,10 @@ def client(monkeypatch, saved):
 
     monkeypatch.setattr(routes.db, "save_check", fake_save_check)
     monkeypatch.setattr(routes.db, "find_risky_entities", lambda text: [])
+    monkeypatch.setattr(lookup, "fetch_entities", lambda pairs: [])
+    monkeypatch.setattr(lookup, "record_report", lambda pairs: None)
+    monkeypatch.setenv("ENTITY_HASH_KEY", "test-entity-key")
+    monkeypatch.setenv("COOKIE_SECURE", "false")  # the test client talks plain http
 
     app = create_app()
     app.config["TESTING"] = True
@@ -35,17 +40,18 @@ def client(monkeypatch, saved):
 
 
 @pytest.fixture
-def admin_headers(client, monkeypatch):
+def admin_session(client, monkeypatch):
+    """Signs the test client in as an admin; the session lives in its cookie jar."""
     admin = {
         "id": 1,
         "email": "admin@genzura.test",
         "password_hash": generate_password_hash("secret123"),
         "role": "admin",
     }
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: admin)
+    monkeypatch.setattr(auth, "_store_get_admin", lambda email: admin)
     res = client.post("/api/admin/login",
                       json={"email": "admin@genzura.test", "password": "secret123"})
-    return {"Authorization": f"Bearer {res.get_json()['token']}"}
+    assert res.status_code == 200
 
 
 # ---------- health ----------
@@ -142,6 +148,34 @@ def test_check_falls_back_to_rules_when_entity_lookup_fails(client, monkeypatch)
     res = client.post("/api/check", json={"text": HIGH_RISK_TEXT})
     assert res.status_code == 200
     assert res.get_json()["verdict"] == "high_risk"
+
+
+@pytest.mark.parametrize("body", [
+    {"text": 123}, {"text": 0}, {"text": True}, {"text": ["hello"]}, {"text": {"a": 1}},
+])
+def test_check_rejects_non_string_text_with_400(client, body):
+    res = client.post("/api/check", json=body)
+    assert res.status_code == 400
+    assert res.get_json() == {"error": "text must be a string"}
+
+
+@pytest.mark.parametrize("body,error", [
+    ({"text": "hi", "context": 5}, "context must be a string"),
+    ({"text": "hi", "context": ["job"]}, "context must be a string"),
+    ({"text": "hi", "language": 1}, "language must be a string"),
+    ({"text": "hi", "language": None}, "language must be a string"),
+])
+def test_check_rejects_non_string_context_or_language_with_400(client, body, error):
+    res = client.post("/api/check", json=body)
+    assert res.status_code == 400
+    assert res.get_json() == {"error": error}
+
+
+def test_check_rejects_text_over_2000_characters(client):
+    assert client.post("/api/check", json={"text": "x" * 2000}).status_code == 200
+    res = client.post("/api/check", json={"text": "x" * 2001})
+    assert res.status_code == 400
+    assert res.get_json() == {"error": "text must be at most 2000 characters"}
 
 
 # ---------- /api/verify ----------
@@ -273,38 +307,22 @@ def test_sms_with_empty_text_does_nothing(client, saved, sent):
     assert saved == [] and sent == []
 
 
-# ---------- admin ----------
+# ---------- admin routes (login itself is tested in test_auth.py) ----------
 
-def test_admin_routes_require_a_token(client):
+def test_admin_routes_require_a_session(client):
     assert client.get("/api/admin/stats").status_code == 401
-    bad = {"Authorization": "Bearer not-a-real-token"}
+    bad = {"Cookie": "genzura_session=not-a-real-token"}
     assert client.get("/api/admin/stats", headers=bad).status_code == 401
 
 
-def test_admin_login_requires_email_and_password(client):
-    assert client.post("/api/admin/login", json={"email": "a@b.co"}).status_code == 400
-
-
-def test_admin_login_rejects_wrong_password_and_unknown_user(client, monkeypatch):
-    admin = {"id": 1, "email": "admin@genzura.test",
-             "password_hash": generate_password_hash("secret123"), "role": "admin"}
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: admin)
-    res = client.post("/api/admin/login", json={"email": "admin@genzura.test", "password": "wrong"})
-    assert res.status_code == 401
-
-    monkeypatch.setattr(routes.db, "get_admin_by_email", lambda email: None)
-    res = client.post("/api/admin/login", json={"email": "nobody@genzura.test", "password": "x"})
-    assert res.status_code == 401
-
-
-def test_admin_login_returns_working_token(client, admin_headers, monkeypatch):
+def test_admin_session_opens_admin_routes(client, admin_session, monkeypatch):
     monkeypatch.setattr(routes.db, "get_stats", lambda: {"total_checks": 3})
-    res = client.get("/api/admin/stats", headers=admin_headers)
+    res = client.get("/api/admin/stats")
     assert res.status_code == 200
     assert res.get_json() == {"total_checks": 3}
 
 
-def test_admin_reports_list_validates_status(client, admin_headers, monkeypatch):
+def test_admin_reports_list_validates_status(client, admin_session, monkeypatch):
     seen = {}
 
     def fake_list_reports(status, limit, offset):
@@ -313,29 +331,28 @@ def test_admin_reports_list_validates_status(client, admin_headers, monkeypatch)
 
     monkeypatch.setattr(routes.db, "list_reports", fake_list_reports)
 
-    assert client.get("/api/admin/reports?status=bogus", headers=admin_headers).status_code == 400
+    assert client.get("/api/admin/reports?status=bogus").status_code == 400
 
-    res = client.get("/api/admin/reports?status=new&limit=999", headers=admin_headers)
+    res = client.get("/api/admin/reports?status=new&limit=999")
     assert res.status_code == 200
     assert seen == {"status": "new", "limit": 200, "offset": 0}  # limit is capped at 200
 
 
-def test_admin_update_report_status(client, admin_headers, monkeypatch):
+def test_admin_update_report_status(client, admin_session, monkeypatch):
     url = "/api/admin/reports/5"
 
-    res = client.patch(url, json={"status": "bogus"}, headers=admin_headers)
-    assert res.status_code == 400
+    assert client.patch(url, json={"status": "bogus"}).status_code == 400
+    assert client.patch(url, json={"status": ["closed"]}).status_code == 400
 
     monkeypatch.setattr(routes.db, "update_report_status", lambda rid, status: None)
-    res = client.patch(url, json={"status": "closed"}, headers=admin_headers)
-    assert res.status_code == 404
+    assert client.patch(url, json={"status": "closed"}).status_code == 404
 
     monkeypatch.setattr(routes.db, "update_report_status",
                         lambda rid, status: {"id": rid, "status": status})
-    res = client.patch(url, json={"status": "closed"}, headers=admin_headers)
+    res = client.patch(url, json={"status": "closed"})
     assert res.status_code == 200
     assert res.get_json() == {"id": 5, "status": "closed"}
 
 
-def test_admin_update_report_requires_token(client):
+def test_admin_update_report_requires_a_session(client):
     assert client.patch("/api/admin/reports/5", json={"status": "closed"}).status_code == 401

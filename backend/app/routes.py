@@ -1,12 +1,12 @@
+# OWNER: Abay
 import logging
-from functools import wraps
 
-from flask import Blueprint, current_app, jsonify, request
-from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
-from werkzeug.security import check_password_hash
+from flask import Blueprint, jsonify, request
 
 from . import db
+from .auth import attach_check, current_user_id, require_admin
 from .integrations import send_sms, ussd_continue, ussd_end
+from .lookup import apply_entity_flags, lookup as lookup_entities, record_report_entities
 from .privacy import mask_text
 from .rules import add_flag, evaluate
 
@@ -17,7 +17,7 @@ api_bp = Blueprint("api", __name__)
 VALID_CONTEXTS = {"job", "scholarship", "visa"}
 VALID_LANGUAGES = {"en", "rw"}
 VALID_REPORT_STATUSES = {"new", "reviewing", "forwarded", "closed"}
-TOKEN_MAX_AGE = 60 * 60 * 8  # 8 hours
+MAX_TEXT_LENGTH = 2000
 
 VERDICT_LABELS = {
     "low_risk": "LOW RISK: no major scam signs found. Still verify the sender.",
@@ -27,6 +27,26 @@ VERDICT_LABELS = {
 
 
 # ---------- helpers ----------
+
+def _json_body():
+    data = request.get_json(silent=True)
+    return {} if data is None else data
+
+
+def _text_from(data):
+    """Return (text, error). error is the message for a 400, or None."""
+    if not isinstance(data, dict):
+        return None, "request body must be a JSON object"
+    text = data.get("text")
+    if text is None or (isinstance(text, str) and not text.strip()):
+        return None, "text is required"
+    if not isinstance(text, str):
+        return None, "text must be a string"
+    text = text.strip()
+    if len(text) > MAX_TEXT_LENGTH:
+        return None, f"text must be at most {MAX_TEXT_LENGTH} characters"
+    return text, None
+
 
 def _save_check(channel, context, language, text, result):
     """Persist a check without ever breaking the response if the DB is down."""
@@ -38,7 +58,7 @@ def _save_check(channel, context, language, text, result):
 
 
 def _evaluate(text, context):
-    """Rule-based score, plus extra flags if the text names a risky entity."""
+    """Rule-based score, plus extra flags for risky entities and known contacts."""
     result = evaluate(text, context)
     try:
         for entity in db.find_risky_entities(text):
@@ -47,41 +67,36 @@ def _evaluate(text, context):
             else:
                 result = add_flag(result, "flagged_entity", 25)
     except Exception:
-        log.exception("Entity check failed; using rule score only")
+        log.exception("Entity name check failed; using rule score only")
+    try:
+        result = apply_entity_flags(result, text)
+    except Exception:
+        log.exception("Contact lookup failed; using rule score only")
     return result
 
 
-def _serializer():
-    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt="admin-auth")
-
-
-def require_admin(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        header = request.headers.get("Authorization", "")
-        if not header.startswith("Bearer "):
-            return jsonify({"error": "authentication required"}), 401
-        try:
-            request.admin = _serializer().loads(header[7:], max_age=TOKEN_MAX_AGE)
-        except SignatureExpired:
-            return jsonify({"error": "token expired"}), 401
-        except BadSignature:
-            return jsonify({"error": "invalid token"}), 401
-        return f(*args, **kwargs)
-    return wrapper
+def _link_check_to_user(check_id, user_id):
+    try:
+        attach_check(check_id, user_id)
+    except Exception:
+        log.exception("Could not link check to user")
 
 
 # ---------- public: check ----------
 
 @api_bp.route("/api/check", methods=["POST"])
 def check():
-    data = request.get_json(silent=True) or {}
-    text = (data.get("text") or "").strip()
+    data = _json_body()
+    text, error = _text_from(data)
+    if error:
+        return jsonify({"error": error}), 400
+
     context = data.get("context", "job")
     language = data.get("language", "en")
-
-    if not text:
-        return jsonify({"error": "text is required"}), 400
+    if not isinstance(context, str):
+        return jsonify({"error": "context must be a string"}), 400
+    if not isinstance(language, str):
+        return jsonify({"error": "language must be a string"}), 400
     if context not in VALID_CONTEXTS:
         return jsonify({"error": "context must be job, scholarship, or visa"}), 400
     if language not in VALID_LANGUAGES:
@@ -89,7 +104,27 @@ def check():
 
     result = _evaluate(text, context)
     check_id = _save_check("web", context, language, text, result)
+
+    user_id = current_user_id()  # signed-in users see this check in "My checks"
+    if check_id and user_id:
+        _link_check_to_user(check_id, user_id)
+
     return jsonify({**result, "check_id": check_id})
+
+
+# ---------- public: contact lookup ----------
+
+@api_bp.route("/api/lookup", methods=["POST"])
+def lookup_contacts():
+    text, error = _text_from(_json_body())
+    if error:
+        return jsonify({"error": error}), 400
+    try:
+        entities = lookup_entities(text)
+    except Exception:
+        log.exception("Lookup failed")
+        return jsonify({"error": "lookup unavailable"}), 503
+    return jsonify({"entities": entities})
 
 
 # ---------- public: verify entity ----------
@@ -111,13 +146,18 @@ def verify_entity():
 
 @api_bp.route("/api/report", methods=["POST"])
 def create_report():
-    data = request.get_json(silent=True) or {}
-    description = (data.get("description") or "").strip()
+    data = _json_body()
+    if not isinstance(data, dict):
+        return jsonify({"error": "request body must be a JSON object"}), 400
+    description = data.get("description")
     check_id = data.get("check_id")
 
-    if len(description) < 10:
+    if not isinstance(description, str) or len(description.strip()) < 10:
         return jsonify({"error": "description must be at least 10 characters"}), 400
-    if check_id is not None and not isinstance(check_id, int):
+    description = description.strip()
+    if len(description) > MAX_TEXT_LENGTH:
+        return jsonify({"error": f"description must be at most {MAX_TEXT_LENGTH} characters"}), 400
+    if check_id is not None and (isinstance(check_id, bool) or not isinstance(check_id, int)):
         return jsonify({"error": "check_id must be an integer"}), 400
 
     try:
@@ -125,6 +165,13 @@ def create_report():
     except Exception:
         log.exception("Could not create report")
         return jsonify({"error": "could not save report"}), 500
+
+    # Count the report against every phone, email and link it mentions.
+    # Best effort: the report itself is already saved.
+    try:
+        record_report_entities(description)
+    except Exception:
+        log.exception("Could not record report entities")
     return jsonify(report), 201
 
 
@@ -175,28 +222,7 @@ def sms():
     return "OK", 200
 
 
-# ---------- admin ----------
-
-@api_bp.route("/api/admin/login", methods=["POST"])
-def admin_login():
-    data = request.get_json(silent=True) or {}
-    email = (data.get("email") or "").strip()
-    password = data.get("password") or ""
-    if not email or not password:
-        return jsonify({"error": "email and password are required"}), 400
-
-    try:
-        admin = db.get_admin_by_email(email)
-    except Exception:
-        log.exception("Admin lookup failed")
-        return jsonify({"error": "service unavailable"}), 503
-
-    if not admin or not check_password_hash(admin["password_hash"], password):
-        return jsonify({"error": "invalid credentials"}), 401
-
-    token = _serializer().dumps({"id": admin["id"], "role": admin["role"]})
-    return jsonify({"token": token, "role": admin["role"]})
-
+# ---------- admin (login lives in auth.py) ----------
 
 @api_bp.route("/api/admin/stats", methods=["GET"])
 @require_admin
@@ -218,9 +244,9 @@ def admin_reports():
 @api_bp.route("/api/admin/reports/<int:report_id>", methods=["PATCH"])
 @require_admin
 def admin_update_report(report_id):
-    data = request.get_json(silent=True) or {}
-    status = data.get("status")
-    if status not in VALID_REPORT_STATUSES:
+    data = _json_body()
+    status = data.get("status") if isinstance(data, dict) else None
+    if not isinstance(status, str) or status not in VALID_REPORT_STATUSES:
         return jsonify({"error": "status must be new, reviewing, forwarded, or closed"}), 400
     report = db.update_report_status(report_id, status)
     if not report:

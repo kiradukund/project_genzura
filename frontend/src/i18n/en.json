@@ -1,0 +1,195 @@
+{
+  "alreadyPaid": {},
+  "trends": {},
+  "assess": {},
+  "auth": {},
+  "myChecks": {},
+  "admin": {},
+  "report": {},
+  "alerts": {},
+  "agencies": {},
+  "appName": "Genzura",
+  "title": "Check before you pay",
+  "subtitle": "Verify overseas job offers, scholarships and visas to avoid scams",
+  "language": "Language",
+  "nav": {
+    "label": "Main menu",
+    "menu": "Open menu",
+    "how": "How it works",
+    "check": "Check an offer",
+    "signs": "Warning signs",
+    "report": "Report a scam",
+    "directory": "Official contacts"
+  },
+  "home": {
+    "cta": "Check an offer now",
+    "trust": "Free · Private · Results in seconds",
+    "stepsTitle": "How it works",
+    "steps": {
+      "1": {
+        "title": "Paste or upload the offer",
+        "body": "Copy the WhatsApp message or email, or upload a screenshot. Choose job, scholarship or visa."
+      },
+      "2": {
+        "title": "Get a risk level in seconds",
+        "body": "Genzura checks the offer for known scam signs and shows exactly which red flags it found."
+      },
+      "3": {
+        "title": "Act safely",
+        "body": "Never pay before you verify. Report scams to RIB on 166 or get help from a Digital Ambassador."
+      }
+    },
+    "checkTitle": "Check an offer",
+    "signsTitle": "What Genzura looks for",
+    "signsIntro": "Common signs of fake overseas offers. The more signs an offer has, the higher its risk.",
+    "ribTitle": "Already paid, or being pushed to pay?",
+    "ribBody": "Stop sending money and report it to the Rwanda Investigation Bureau."
+  },
+  "offerType": {
+    "label": "What kind of offer is it?",
+    "job": "Job",
+    "scholarship": "Scholarship",
+    "visa": "Visa"
+  },
+  "form": {
+    "label": "Offer message",
+    "placeholder": "Paste the WhatsApp or email offer here...",
+    "check": "Check Offer",
+    "checking": "Checking...",
+    "error": "We could not check this offer. Check your connection and try again."
+  },
+  "upload": {
+    "button": "Upload Screenshot",
+    "hint": "The image is read on your phone and never uploaded.",
+    "reading": "Reading screenshot...",
+    "tooBig": "Image must be under 5 MB.",
+    "notImage": "Please choose an image file.",
+    "noText": "No text found in this image. Try a clearer screenshot.",
+    "failed": "Could not read this image. Try again or paste the text."
+  },
+  "risk": {
+    "high_risk": "HIGH RISK",
+    "suspicious": "MEDIUM RISK",
+    "low_risk": "LOW RISK"
+  },
+  "explain": {
+    "high_risk": "It's likely a scam. Do not pay or share personal documents.",
+    "suspicious": "Be careful. Some warning signs were found. Verify before you pay or share anything.",
+    "low_risk": "No major scam signs found. Still verify the company through official channels."
+  },
+  "score": "Risk score",
+  "flagsTitle": "Red Flags Found",
+  "noFlags": "No red flags found.",
+  "flags": {
+    "upfront_fee": "Upfront payment requested",
+    "guaranteed_outcome": "Guaranteed visa/job/scholarship claim",
+    "urgency_pressure": "Pressure to act quickly",
+    "free_email_contact": "Generic email address (e.g. gmail.com)",
+    "chat_app_only": "Contact only through WhatsApp or Telegram",
+    "sensitive_info_request": "Asks for passport/ID/PIN up front",
+    "blacklisted_entity": "Names a company or contact known for scams",
+    "flagged_entity": "Names a company or contact reported as suspicious"
+  },
+  "nextSteps": "What to do next",
+  "actions": {
+    "reportRib": "Report to RIB (166)",
+    "findAmbassador": "Find a Digital Ambassador",
+    "ambassadorTitle": "Digital Ambassadors",
+    "ambassadorEmpty": "The ambassador list is coming soon. Until then, call RIB on 166 for help.",
+    "close": "Close"
+  },
+  "sms": {
+    "label": "Send result to my phone",
+    "placeholder": "07X XXX XXXX",
+    "send": "Send",
+    "sending": "Sending...",
+    "sent": "Sent. Check your messages.",
+    "invalid": "Enter a valid Rwandan phone number.",
+    "failed": "Could not send the SMS. Try again later."
+  },
+  "samples": {
+    "label": "Try an example:",
+    "job": "Job scam",
+    "scholarship": "Scholarship scam",
+    "visa": "Visa scam",
+    "text": {
+      "job": "URGENT! Hotel jobs in Dubai, salary $1,500 per month. No interview needed, 100% guaranteed visa. Pay the registration fee of 150,000 RWF by Mobile Money before Friday to secure your place. Contact hr.dubaijobs@gmail.com or WhatsApp only.",
+      "scholarship": "Congratulations! You have been selected for a fully funded scholarship in Canada. To secure your slot, send a copy of your passport and the processing fee of $200 through Western Union within 24 hours. Limited slots.",
+      "visa": "Get your UK work visa in 7 days, guaranteed! No IELTS needed. Share your passport and bank account details with our agent and pay the visa fee today. Act now, last chance."
+    }
+  },
+  "share": {
+    "whatsapp": "Share on WhatsApp",
+    "copy": "Copy result",
+    "copied": "Copied",
+    "intro": "Genzura checked an offer:",
+    "flags": "Red flags:",
+    "outro": "Check offers before you pay:"
+  },
+  "channels": {
+    "title": "Use Genzura your way",
+    "intro": "Built for every phone, from smartphones to basic feature phones.",
+    "available": "Available now",
+    "soon": "Coming soon",
+    "web": {
+      "title": "Website",
+      "body": "Paste a message or upload a screenshot and get a result in seconds."
+    },
+    "ussd": {
+      "title": "USSD",
+      "body": "Dial a short code on any phone, no internet needed, and get a verdict on screen."
+    },
+    "sms": {
+      "title": "SMS",
+      "body": "Receive your result as a text message you can keep and show others."
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "items": {
+      "1": {
+        "q": "Is Genzura free to use?",
+        "a": "Yes. Checking an offer costs nothing."
+      },
+      "2": {
+        "q": "What happens to my screenshot and message?",
+        "a": "Screenshots are read on your own phone and never uploaded. The offer text is checked and stored without personal details such as phone numbers and email addresses, so authorities can see scam trends without seeing who you are."
+      },
+      "3": {
+        "q": "If the result is LOW RISK, is the offer safe?",
+        "a": "Not necessarily. No tool can be 100% sure. LOW RISK means no major warning signs were found. Always confirm the company through official channels before you pay or share documents."
+      },
+      "4": {
+        "q": "Which offers can I check?",
+        "a": "Job offers, scholarships and visa offers, especially ones for opportunities abroad that you received by WhatsApp, SMS, email or social media."
+      },
+      "5": {
+        "q": "I don't have a smartphone. Can I still use it?",
+        "a": "A USSD and SMS version for basic phones is being built, so anyone can check an offer without internet."
+      },
+      "6": {
+        "q": "I already paid. What should I do?",
+        "a": "Stop sending money, keep every message and receipt, and report it to the Rwanda Investigation Bureau (RIB) on 166 as soon as possible."
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Helping young people in Rwanda check overseas job, scholarship and visa offers before they pay.",
+    "explore": "Explore",
+    "help": "Get help",
+    "faq": "FAQ",
+    "rib": "Rwanda Investigation Bureau",
+    "privacy": "Your screenshots never leave your phone. Personal details are removed before anything is stored.",
+    "rights": "All rights reserved.",
+    "made": "Made in Rwanda",
+    "top": "Back to top"
+  },
+  "directory": {
+    "title": "Official Verification Directory",
+    "intro": "Contact these official institutions to verify information, report fraud or get support.",
+    "search": "Search...",
+    "verified": "Verified",
+    "lastVerified": "Last verified",
+    "empty": "No institutions found."
+  }
+}
