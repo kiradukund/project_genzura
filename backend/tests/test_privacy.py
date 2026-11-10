@@ -1,4 +1,5 @@
-from app.privacy import redact
+# OWNER: Chol
+from app.privacy import redact, strip_query_strings
 
 
 def test_email_redacted():
@@ -27,3 +28,12 @@ def test_unspaced_rw_phone_redacted():
 def test_normal_sentence_unchanged():
     text = "this offer looks suspicious"
     assert redact(text) == text
+
+
+def test_query_string_stripped():
+    assert strip_query_strings("https://example.com/apply?id=123&phone=0788") == "https://example.com/apply"
+
+
+def test_query_string_stripped_before_storage():
+    result = redact("apply at https://example.com/job?ref=abc&email=x@y.com")
+    assert "ref=abc" not in result

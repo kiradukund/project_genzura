@@ -1,5 +1,7 @@
 import re
 
+# OWNER: Chol
+
 # Rwandan unspaced numbers: 0788123456, 250788123456, +250788123456
 _RW_PHONE_RE = re.compile(r"(?:\+?250|\b0)7[2389]\d{7}\b")
 
@@ -15,8 +17,17 @@ _EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}")
 # Limitation accepted: narrowing further would risk missing real names.
 _NAME_RE = re.compile(r"\b[A-Z][a-z]+ [A-Z][a-z]+\b")
 
+# URL query strings: strip ?id=...&phone=... before storage
+_QUERY_RE = re.compile(r"(\?[^\s]*)")
+
+
+def strip_query_strings(text: str) -> str:
+    """Remove URL query strings (?key=value&...) before storage."""
+    return _QUERY_RE.sub("", text)
+
 
 def redact(text: str) -> str:
+    text = strip_query_strings(text)
     text = _EMAIL_RE.sub("[EMAIL]", text)
     text = _RW_PHONE_RE.sub("[PHONE]", text)
     text = _PHONE_RE.sub("[PHONE]", text)
