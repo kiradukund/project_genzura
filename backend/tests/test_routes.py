@@ -1,31 +1,32 @@
 # OWNER: Abay
 import pytest
-from werkzeug.security import generate_password_hash
 
 from app import auth, create_app, lookup, routes
 
 HIGH_RISK_TEXT = "Guaranteed visa, pay the processing fee"  # upfront_fee + guaranteed_outcome = 60
 
 
-# ---------- fixtures: no real Postgres or Africa's Talking needed ----------
-
 @pytest.fixture
 def saved():
-    """Every check the routes try to save ends up in this list."""
+    """Every check the route tries to save ends up in this list."""
     return []
 
 
 @pytest.fixture
 def client(monkeypatch, saved):
-    def fake_save_check(channel, context, language, masked_text, result):
+    def fake_save_check(masked_text, context, risk_score, verdict, flags,
+                        channel="web", language="en"):
         saved.append({
-            "channel": channel,
-            "context": context,
-            "language": language,
             "masked_text": masked_text,
-            "result": result,
+            "context": context,
+            "risk_score": risk_score,
+            "verdict": verdict,
+            "flags": flags,
+            "channel": channel,
+            "language": language,
         })
         return len(saved)
+
 
     monkeypatch.setattr(routes.db, "save_check", fake_save_check)
     monkeypatch.setattr(routes.db, "find_risky_entities", lambda text: [])
@@ -34,9 +35,11 @@ def client(monkeypatch, saved):
     monkeypatch.setenv("ENTITY_HASH_KEY", "test-entity-key")
     monkeypatch.setenv("COOKIE_SECURE", "false")  # the test client talks plain http
 
+    monkeypatch.setattr(routes, "save_check", fake_save_check)
     app = create_app()
     app.config["TESTING"] = True
     return app.test_client()
+
 
 
 @pytest.fixture
@@ -61,8 +64,6 @@ def test_health(client):
     assert res.status_code == 200
     assert res.get_json() == {"status": "Genzura API is running"}
 
-
-# ---------- /api/check ----------
 
 def test_check_returns_expected_shape(client):
     res = client.post("/api/check", json={"text": "hello", "context": "job"})
@@ -116,7 +117,7 @@ def test_check_still_responds_when_database_save_fails(client, monkeypatch):
     def boom(*args, **kwargs):
         raise RuntimeError("db down")
 
-    monkeypatch.setattr(routes.db, "save_check", boom)
+    monkeypatch.setattr(routes, "save_check", boom)
     res = client.post("/api/check", json={"text": "hello"})
     assert res.status_code == 200
     assert res.get_json()["check_id"] is None

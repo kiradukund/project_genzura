@@ -9,9 +9,11 @@ from .integrations import send_sms, ussd_continue, ussd_end
 from .lookup import apply_entity_flags, lookup as lookup_entities, record_report_entities
 from .privacy import mask_text
 from .rules import add_flag, evaluate
+from .db import save_check
+from .privacy import redact
+from .rules import evaluate
 
 log = logging.getLogger(__name__)
-
 api_bp = Blueprint("api", __name__)
 
 VALID_CONTEXTS = {"job", "scholarship", "visa"}
@@ -83,6 +85,7 @@ def _link_check_to_user(check_id, user_id):
 
 
 # ---------- public: check ----------
+
 
 @api_bp.route("/api/check", methods=["POST"])
 def check():
@@ -252,3 +255,13 @@ def admin_update_report(report_id):
     if not report:
         return jsonify({"error": "report not found"}), 404
     return jsonify(report)
+    # 1. rules on the RAW text  2. redact a copy  3. save the redacted copy
+    result = evaluate(text, context)
+    try:
+        check_id = save_check(redact(text), context, result["risk_score"],
+                              result["verdict"], result["flags"], "web", language)
+    except Exception:
+        log.exception("Could not save check")
+        check_id = None
+
+    return jsonify({**result, "check_id": check_id})
