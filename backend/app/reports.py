@@ -2,15 +2,16 @@ from flask import Blueprint, jsonify, request
 
 from .db import _get_conn
 from .privacy import redact
+from .lookup import record_report_entities, hashed_entities
 
 reports_bp = Blueprint("reports", __name__)
 
 # OWNER: Chol - Report a scam, moderation, blocklist.
 # Endpoints:
-#   POST /api/reports          — user submits a report
-#   GET  /api/admin/reports    — list pending reports (Didier's admin page calls this)
-#   POST /api/admin/reports/<id>/approve  — approve and blacklist
-#   POST /api/admin/reports/<id>/reject   — reject
+#   POST /api/reports                        — user submits a report
+#   GET  /api/admin/reports                  — list reports by status (Didier calls this)
+#   POST /api/admin/reports/<id>/approve     — approve and blacklist entities
+#   POST /api/admin/reports/<id>/reject      — reject
 
 
 @reports_bp.route("/api/reports", methods=["POST"])
@@ -25,6 +26,9 @@ def submit_report():
 
     masked_text = redact(text)
     masked_contact = redact(contact) if contact else None
+
+    # count entities from the raw text before redacting
+    record_report_entities(text)
 
     conn = _get_conn()
     try:
@@ -88,6 +92,21 @@ def approve_report(report_id):
             row = cur.fetchone()
             if not row:
                 return jsonify({"error": "report not found"}), 404
+
+            # blacklist all entities found in the report text
+            masked_text = row[0]
+            entities = hashed_entities(masked_text)
+            for e in entities:
+                cur.execute(
+                    """
+                    INSERT INTO entities (kind, value_hash, report_count, status)
+                    VALUES (%s, %s, 1, 'blacklisted')
+                    ON CONFLICT (kind, value_hash) DO UPDATE
+                    SET status = 'blacklisted', last_seen_at = NOW()
+                    """,
+                    (e["kind"], e["value_hash"]),
+                )
+
             cur.execute(
                 "INSERT INTO audit_log (admin_email, action, report_id, note) VALUES (%s, 'approved', %s, %s)",
                 (admin_email, report_id, note),
