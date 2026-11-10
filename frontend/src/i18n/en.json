@@ -1,7 +1,64 @@
 {
   "alreadyPaid": {},
   "trends": {},
-  "assess": {},
+  "assess": {
+    "title": "Answer a few questions",
+    "intro": "No message to paste? Answer 6 quick questions about the offer and Genzura will show how risky it is.",
+    "question": "Question",
+    "next": "Next",
+    "back": "Back",
+    "seeResult": "See result",
+    "checking": "Checking...",
+    "startAgain": "Start again",
+    "error": "We could not check your answers. Check your connection and try again.",
+    "reasonsTitle": "Why this result",
+    "noReasons": "None of your answers showed a scam sign.",
+    "questions": {
+      "contact": {
+        "q": "How did they contact you?",
+        "chat_app": "WhatsApp or Telegram only",
+        "personal_email": "Personal email (e.g. Gmail)",
+        "company": "Company email or website",
+        "in_person": "In person at a known agency"
+      },
+      "pay_before": {
+        "q": "Did they ask you to pay before you travel or start?",
+        "yes": "Yes",
+        "not_sure": "Not sure",
+        "no": "No"
+      },
+      "payment_method": {
+        "q": "How did they ask you to pay?",
+        "untraceable": "Mobile Money to a person, Western Union or crypto",
+        "company_bank": "Company bank account",
+        "not_asked": "They did not ask"
+      },
+      "interview": {
+        "q": "Did you have a real interview?",
+        "no": "No",
+        "yes": "Yes"
+      },
+      "official_website": {
+        "q": "Can you find the company on an official website?",
+        "no": "No",
+        "not_checked": "I have not checked",
+        "yes": "Yes"
+      },
+      "documents": {
+        "q": "Did they ask for your passport, ID, PIN or bank details early?",
+        "yes": "Yes",
+        "no": "No"
+      }
+    },
+    "reasons": {
+      "contact": "Real employers rarely recruit only by chat app or personal email",
+      "pay_before": "You were asked to pay before you travel or start",
+      "payment_method": "The payment method is hard to trace or get back",
+      "interview": "No real interview was held",
+      "official_website": "The company could not be confirmed on an official website",
+      "documents": "They asked for personal documents or details too early"
+    }
+  },
   "auth": {},
   "myChecks": {},
   "admin": {},

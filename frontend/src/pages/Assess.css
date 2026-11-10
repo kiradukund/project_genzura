@@ -1,0 +1,75 @@
+/* OWNER: Alier - Guided assessment page. Uses the shared colours from styles.css. */
+
+.assess {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.assess-question {
+  border: 0;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.assess-question legend {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.assess-progress {
+  display: block;
+  color: var(--gold-500);
+  font-size: 0.85rem;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.assess-answers {
+  display: grid;
+  gap: 10px;
+}
+
+/* Whole row is tappable; long Kinyarwanda answers wrap instead of overflowing. */
+.assess-answer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--touch);
+  padding: 10px 14px;
+  background: var(--navy-800);
+  border: 2px solid var(--navy-700);
+  border-radius: var(--radius);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.assess-answer.active {
+  border-color: var(--gold-500);
+}
+
+.assess-answer input {
+  accent-color: var(--gold-500);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.assess-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.assess-nav button {
+  min-height: var(--touch);
+}
+
+.assess-error {
+  color: var(--risk-high);
+}
+
+.assess-restart {
+  margin-top: 16px;
+}
