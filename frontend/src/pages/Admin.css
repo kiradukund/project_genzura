@@ -85,3 +85,22 @@
 .domains th {
   color: #d4af37;
 }
+
+
+/* Phone: the table scrolls inside its own box, not the whole page */
+.admin .domains {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .admin {
+    padding: 16px;
+  }
+  .admin .domains th,
+  .admin .domains td {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+}
