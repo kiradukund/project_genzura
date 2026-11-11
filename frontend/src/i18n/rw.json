@@ -1,7 +1,64 @@
 {
   "alreadyPaid": {},
   "trends": {},
-  "assess": {},
+  "assess": {
+    "title": "Subiza ibibazo bike",
+    "intro": "Nta butumwa ufite bwo gushyiramo? Subiza ibibazo 6 byihuse ku itangazo, Genzura ikwereke urugero rw'ibyago.",
+    "question": "Ikibazo",
+    "next": "Komeza",
+    "back": "Subira inyuma",
+    "seeResult": "Reba igisubizo",
+    "checking": "Birimo gusuzumwa...",
+    "startAgain": "Ongera utangire",
+    "error": "Ntibyashobotse gusuzuma ibisubizo byawe. Reba interineti yawe wongere ugerageze.",
+    "reasonsTitle": "Impamvu z'iki gisubizo",
+    "noReasons": "Nta gisubizo cyawe cyagaragaje ikimenyetso cy'uburiganya.",
+    "questions": {
+      "contact": {
+        "q": "Bakuvugishije bate?",
+        "chat_app": "Kuri WhatsApp cyangwa Telegram gusa",
+        "personal_email": "Imeli bwite (nka Gmail)",
+        "company": "Imeli cyangwa urubuga rw'ikigo",
+        "in_person": "Imbonankubone ku kigo kizwi"
+      },
+      "pay_before": {
+        "q": "Bagusabye kwishyura mbere yo kugenda cyangwa gutangira?",
+        "yes": "Yego",
+        "not_sure": "Simbizi neza",
+        "no": "Oya"
+      },
+      "payment_method": {
+        "q": "Bagusabye kwishyura mu buhe buryo?",
+        "untraceable": "Mobile Money ku muntu, Western Union cyangwa crypto",
+        "company_bank": "Konti ya banki y'ikigo",
+        "not_asked": "Ntibansabye kwishyura"
+      },
+      "interview": {
+        "q": "Wakoze ikiganiro cy'akazi nyacyo?",
+        "no": "Oya",
+        "yes": "Yego"
+      },
+      "official_website": {
+        "q": "Ushobora kubona ikigo ku rubuga rwemewe?",
+        "no": "Oya",
+        "not_checked": "Sindabireba",
+        "yes": "Yego"
+      },
+      "documents": {
+        "q": "Bagusabye pasiporo, indangamuntu, PIN cyangwa konti ya banki hakiri kare?",
+        "yes": "Yego",
+        "no": "Oya"
+      }
+    },
+    "reasons": {
+      "contact": "Abakoresha nyabo ntibakunze gushaka abakozi kuri WhatsApp cyangwa imeli bwite gusa",
+      "pay_before": "Wasabwe kwishyura mbere yo kugenda cyangwa gutangira",
+      "payment_method": "Uburyo bwo kwishyura bugoye gukurikirana cyangwa kugaruza amafaranga",
+      "interview": "Nta kiganiro cy'akazi nyacyo cyabaye",
+      "official_website": "Ikigo nticyabonetse ku rubuga rwemewe",
+      "documents": "Basabye ibyangombwa cyangwa amakuru yawe bwite hakiri kare"
+    }
+  },
   "auth": {},
   "myChecks": {},
   "admin": {},
