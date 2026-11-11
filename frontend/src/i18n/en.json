@@ -1,12 +1,47 @@
 {
-  "alreadyPaid": {},
+  "alreadyPaid": {
+    "title": "Already paid?",
+    "intro": "Act fast. The sooner you report it, the better the chance of stopping the money. These steps come from official sources.",
+    "source": "Source",
+    "callRib": "Call RIB on 166",
+    "numberOnSite": "Call customer care. Use the number on the official website.",
+    "steps": {
+      "stop": {
+        "title": "Stop paying",
+        "body": "Do not send any more money, even if they promise a refund, threaten you or ask for one last fee."
+      },
+      "evidence": {
+        "title": "Keep every message and receipt",
+        "body": "Do not delete the chat. Keep screenshots, phone numbers, names, receipts and the transaction ID of every payment."
+      },
+      "rib": {
+        "title": "Report to RIB on 166",
+        "body": "Call the Rwanda Investigation Bureau free on 166 and tell them what happened. Bring your evidence."
+      },
+      "provider": {
+        "title": "Contact your mobile money provider quickly",
+        "body": "Call your provider straight away with the transaction ID. Ask them to block or reverse the payment."
+      }
+    },
+    "step": "Step"
+  },
   "trends": {},
   "assess": {},
   "auth": {},
   "myChecks": {},
   "admin": {},
   "report": {},
-  "alerts": {},
+  "alerts": {
+    "title": "Get scam alerts by SMS",
+    "intro": "Once a week we text you the scam sign we see most, so you can spot it first. Free. Reply STOP at any time to end it.",
+    "label": "Your phone number",
+    "submit": "Subscribe",
+    "sending": "Subscribing...",
+    "consent": "I agree that Genzura keeps this number only to send me scam alerts.",
+    "done": "Done. You will get a welcome SMS. Reply STOP to end alerts.",
+    "invalid": "Enter a valid Rwandan phone number.",
+    "failed": "Could not subscribe right now. Try again later."
+  },
   "agencies": {},
   "appName": "Genzura",
   "title": "Check before you pay",
@@ -19,7 +54,10 @@
     "check": "Check an offer",
     "signs": "Warning signs",
     "report": "Report a scam",
-    "directory": "Official contacts"
+    "directory": "Official contacts",
+    "alreadyPaid": "Already paid?",
+    "home": "Back to home",
+    "notFound": "Page not found"
   },
   "home": {
     "cta": "Check an offer now",
@@ -43,7 +81,10 @@
     "signsTitle": "What Genzura looks for",
     "signsIntro": "Common signs of fake overseas offers. The more signs an offer has, the higher its risk.",
     "ribTitle": "Already paid, or being pushed to pay?",
-    "ribBody": "Stop sending money and report it to the Rwanda Investigation Bureau."
+    "ribBody": "Stop sending money and report it to the Rwanda Investigation Bureau.",
+    "directoryCta": "See all {n} official contacts",
+    "promiseTitle": "Our promise",
+    "promise": "Check any overseas job, scholarship or visa offer before you pay. No account needed, and personal details are removed before anything is stored."
   },
   "offerType": {
     "label": "What kind of offer is it?",
