@@ -6,6 +6,9 @@ HMAC, never stored in clear), counts how often they were reported, and adds a
 flag to a /api/check result when a contact is already known.
 
 Only reports create or bump rows in `entities`. Checks and lookups only read.
+
+This file also owns the POST /api/lookup route as `lookup_bp`: dev's
+`create_app()` does `from .lookup import lookup_bp`.
 """
 import hashlib
 import hmac
@@ -14,7 +17,8 @@ import os
 import re
 from urllib.parse import urlsplit
 
-from psycopg2.extras import RealDictCursor
+from flask import Blueprint, jsonify, request
+
 
 from .db import _get_conn
 from .rules import add_flag
@@ -125,18 +129,21 @@ def hashed_entities(text):
 # ---------- database ----------
 
 def fetch_entities(pairs):
-    """pairs: [(kind, value_hash)] -> matching rows."""
+    """pairs: [(kind, value_hash)] -> matching rows as dicts."""
     if not pairs:
         return []
+    placeholders = ", ".join(["(%s, %s)"] * len(pairs))  # only "%s" goes into the SQL text
+    params = [item for pair in pairs for item in pair]
     conn = _get_conn()
     try:
-        with conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn, conn.cursor() as cur:
             cur.execute(
-                """SELECT kind, value_hash, report_count, status
-                   FROM entities WHERE (kind, value_hash) IN %s""",
-                (tuple(pairs),),
+                f"""SELECT kind, value_hash, report_count, status
+                    FROM entities WHERE (kind, value_hash) IN ({placeholders})""",
+                params,
             )
-            return cur.fetchall()
+            columns = [col[0] for col in cur.description]
+            return [dict(zip(columns, row)) for row in cur.fetchall()]
     finally:
         conn.close()
 
@@ -213,3 +220,39 @@ def record_report_entities(text):
     entities = hashed_entities(text)
     record_report([(e["kind"], e["value_hash"]) for e in entities])
     return len(entities)
+
+
+# ---------- POST /api/lookup ----------
+
+MAX_TEXT_LENGTH = 2000
+
+lookup_bp = Blueprint("lookup", __name__)
+
+
+def text_from(data):
+    """Validate a {"text": ...} body. Returns (text, error); error is a 400 message or None."""
+    if not isinstance(data, dict):
+        return None, "request body must be a JSON object"
+    text = data.get("text")
+    if text is None or (isinstance(text, str) and not text.strip()):
+        return None, "text is required"
+    if not isinstance(text, str):
+        return None, "text must be a string"
+    text = text.strip()
+    if len(text) > MAX_TEXT_LENGTH:
+        return None, f"text must be at most {MAX_TEXT_LENGTH} characters"
+    return text, None
+
+
+@lookup_bp.route("/api/lookup", methods=["POST"])
+def lookup_contacts():
+    body = request.get_json(silent=True)
+    text, error = text_from({} if body is None else body)
+    if error:
+        return jsonify({"error": error}), 400
+    try:
+        entities = lookup(text)
+    except Exception:
+        log.exception("Lookup failed")
+        return jsonify({"error": "lookup unavailable"}), 503
+    return jsonify({"entities": entities})

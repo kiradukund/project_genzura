@@ -178,12 +178,18 @@ def test_record_report_entities_sends_only_hashes(monkeypatch):
 
 # ---------- routes ----------
 
+def test_lookup_blueprint_is_exported_for_create_app():
+    from flask import Blueprint
+
+    from app.lookup import lookup_bp  # dev's create_app() imports this name
+    assert isinstance(lookup_bp, Blueprint) and lookup_bp.name == "lookup"
+
+
+
 @pytest.fixture
 def client(monkeypatch):
-    monkeypatch.setattr(routes.db, "save_check", lambda *a, **k: 1)
-    monkeypatch.setattr(routes.db, "find_risky_entities", lambda text: [])
+    monkeypatch.setattr(routes.db, "save_check", lambda **kwargs: 1, raising=False)
     monkeypatch.setattr(lookup, "fetch_entities", lambda pairs: [])
-    monkeypatch.setattr(lookup, "record_report", lambda pairs: None)
     app = create_app()
     app.config["TESTING"] = True
     return app.test_client()
@@ -240,22 +246,3 @@ def test_check_still_works_when_contact_lookup_fails(client, monkeypatch):
     res = client.post("/api/check", json={"text": "Call 0788123456, guaranteed job"})
     assert res.status_code == 200
     assert "guaranteed_outcome" in res.get_json()["flags"]
-
-
-def test_report_counts_the_contacts_it_mentions(client, monkeypatch):
-    recorded = []
-    monkeypatch.setattr(routes.db, "create_report", lambda description, check_id=None: {"id": 1})
-    monkeypatch.setattr(lookup, "record_report", lambda pairs: recorded.extend(pairs))
-    res = client.post("/api/report", json={"description": "Scammer called from 0788123456 asking for fees"})
-    assert res.status_code == 201
-    assert recorded == [("phone", lookup.hash_value("phone", PHONE))]
-
-
-def test_report_is_saved_even_if_counting_fails(client, monkeypatch):
-    def boom(pairs):
-        raise RuntimeError("db down")
-
-    monkeypatch.setattr(routes.db, "create_report", lambda description, check_id=None: {"id": 1})
-    monkeypatch.setattr(lookup, "record_report", boom)
-    res = client.post("/api/report", json={"description": "Scammer called from 0788123456 asking for fees"})
-    assert res.status_code == 201

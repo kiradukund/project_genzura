@@ -14,8 +14,12 @@ Rules:
 - DELETE /api/auth/account removes the user, their checks and pending codes.
 
 All database access goes through the small `_store_*` functions, which use
-`_get_conn()` from db.py (a psycopg2 connection) and take timestamps from
+`_get_conn()` from db.py (any DB-API connection) and take timestamps from
 Python so the 5-minute and 1-hour rules are testable.
+
+This file depends on nothing from the old branch: SMS is sent by the private
+`_send_sms` below (Africa's Talking over the standard library), so it does not
+need `integrations.py`.
 """
 import hashlib
 import hmac
@@ -25,14 +29,14 @@ import re
 import secrets
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 from flask import Blueprint, current_app, jsonify, request
 from itsdangerous import BadData, URLSafeTimedSerializer
-from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import _get_conn
-from .integrations import send_sms
 from .lookup import normalize_phone
 
 log = logging.getLogger(__name__)
@@ -48,6 +52,32 @@ SESSION_MAX_AGE = {"admin": 8 * 3600, "user": 7 * 24 * 3600}  # seconds
 
 # Spent on unknown emails so a wrong email and a wrong password take equally long.
 _DUMMY_HASH = generate_password_hash("not-a-real-password")
+
+AT_SMS_URL = "https://api.africastalking.com/version1/messaging"
+AT_SANDBOX_SMS_URL = "https://api.sandbox.africastalking.com/version1/messaging"
+
+
+def _send_sms(to, message):
+    """Send one SMS through Africa's Talking. Returns True on success.
+
+    Never logs the message: it contains the sign-in code.
+    """
+    username, api_key = os.getenv("AT_USERNAME"), os.getenv("AT_API_KEY")
+    if not username or not api_key:
+        log.warning("Africa's Talking credentials missing; SMS not sent")
+        return False
+    request_ = Request(
+        AT_SANDBOX_SMS_URL if username == "sandbox" else AT_SMS_URL,
+        data=urlencode({"username": username, "to": to, "message": message}).encode(),
+        headers={"apiKey": api_key, "Accept": "application/json"},
+        method="POST",
+    )
+    try:
+        with urlopen(request_, timeout=10) as resp:
+            return 200 <= resp.status < 300
+    except OSError:  # URLError and HTTPError are both OSErrors
+        log.exception("Failed to send SMS")
+        return False
 
 
 # ---------- small helpers ----------
@@ -78,8 +108,25 @@ def code_hash(phone_digest, code):
 
 # ---------- session cookie ----------
 
+def _secret_key():
+    """Flask's SECRET_KEY if the app sets one, otherwise the SECRET_KEY env var."""
+    key = current_app.config.get("SECRET_KEY") or os.getenv("SECRET_KEY")
+    if not key:
+        raise RuntimeError("SECRET_KEY is not set")
+    return key
+
+
+def _sessions_configured():
+    try:
+        _secret_key()
+        return True
+    except RuntimeError:
+        log.error("SECRET_KEY is not set: sign-in is disabled")
+        return False
+
+
 def _serializer():
-    return URLSafeTimedSerializer(current_app.config["SECRET_KEY"], salt="session")
+    return URLSafeTimedSerializer(_secret_key(), salt="session")
 
 
 def _cookie_options():
@@ -110,6 +157,9 @@ def current_session():
     try:
         payload, issued_at = _serializer().loads(token, return_timestamp=True)
     except BadData:
+        return None
+    except RuntimeError:  # no SECRET_KEY: treat everyone as signed out instead of failing the request
+        log.error("SECRET_KEY is not set: sessions are disabled")
         return None
     kind = payload.get("k") if isinstance(payload, dict) else None
     if kind not in SESSION_MAX_AGE:
@@ -159,15 +209,19 @@ def require_user(f):
 # ---------- database ----------
 
 def _exec(sql, params=(), fetch=None):
+    """Run one statement. fetch="one" -> dict or None, "all" -> list of dicts,
+    otherwise the number of rows changed."""
     conn = _get_conn()
     try:
-        with conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn, conn.cursor() as cur:
             cur.execute(sql, params)
+            if fetch is None:
+                return cur.rowcount
+            columns = [col[0] for col in cur.description]
+            rows = [dict(zip(columns, row)) for row in cur.fetchall()]
             if fetch == "one":
-                return cur.fetchone()
-            if fetch == "all":
-                return cur.fetchall()
-            return cur.rowcount
+                return rows[0] if rows else None
+            return rows
     finally:
         conn.close()
 
@@ -234,12 +288,12 @@ def _store_delete_user(user_id):
     """Delete the user (their checks go with them: ON DELETE CASCADE) and any codes."""
     conn = _get_conn()
     try:
-        with conn, conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn, conn.cursor() as cur:
             cur.execute("DELETE FROM users WHERE id = %s RETURNING phone_hash", (user_id,))
             row = cur.fetchone()
             if not row:
                 return False
-            cur.execute("DELETE FROM sms_codes WHERE phone_hash = %s", (row["phone_hash"],))
+            cur.execute("DELETE FROM sms_codes WHERE phone_hash = %s", (row[0],))
             return True
     finally:
         conn.close()
@@ -264,6 +318,8 @@ def attach_check(check_id, user_id):
 @auth_bp.route("/api/auth/admin/login", methods=["POST"])
 @auth_bp.route("/api/admin/login", methods=["POST"])  # path the first version used
 def admin_login():
+    if not _sessions_configured():
+        return jsonify({"error": "sign-in is not configured"}), 503
     data = _json_body()
     email = data.get("email")
     password = data.get("password")
@@ -306,7 +362,7 @@ def phone_request():
         return jsonify({"error": "service unavailable"}), 503
 
     minutes = int(CODE_TTL.total_seconds() // 60)
-    if not send_sms(e164, f"Your Genzura code is {code}. It expires in {minutes} minutes."):
+    if not _send_sms(e164, f"Your Genzura code is {code}. It expires in {minutes} minutes."):
         try:  # a code nobody received must not use up the person's hourly allowance
             _store_delete_code(code_id)
         except Exception:
@@ -318,6 +374,8 @@ def phone_request():
 
 @auth_bp.route("/api/auth/phone/verify", methods=["POST"])
 def phone_verify():
+    if not _sessions_configured():  # checked first so a good code is not used up for nothing
+        return jsonify({"error": "sign-in is not configured"}), 503
     data = _json_body()
     phone, code = data.get("phone"), data.get("code")
     e164 = normalize_phone(phone) if isinstance(phone, str) else None

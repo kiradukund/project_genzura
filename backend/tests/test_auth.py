@@ -99,6 +99,7 @@ def env(monkeypatch):
     monkeypatch.setenv("PHONE_HASH_KEY", "test-phone-key")
     monkeypatch.setenv("ENTITY_HASH_KEY", "test-entity-key")
     monkeypatch.setenv("COOKIE_SECURE", "false")  # the test client talks plain http
+    monkeypatch.setenv("SECRET_KEY", "test-secret")  # dev's create_app() does not set one
 
 
 @pytest.fixture
@@ -132,7 +133,7 @@ def clock(monkeypatch):
 @pytest.fixture
 def sms_log(monkeypatch):
     sent = []
-    monkeypatch.setattr(auth, "send_sms", lambda to, msg: sent.append((to, msg)) or True)
+    monkeypatch.setattr(auth, "_send_sms", lambda to, msg: sent.append((to, msg)) or True)
     return sent
 
 
@@ -140,6 +141,8 @@ def sms_log(monkeypatch):
 def client(store, clock, sms_log):
     app = create_app()
     app.config["TESTING"] = True
+    app.add_url_rule("/__test/admin-only", "test_admin_only",
+                     auth.require_admin(lambda: ("ok", 200)))
     return app.test_client()
 
 
@@ -264,9 +267,19 @@ def test_logout_clears_the_cookie(client, store):
     assert client.get("/api/auth/me").status_code == 401
 
 
-def test_a_user_session_cannot_open_admin_routes(client, sms_log):
+def test_require_admin_guards_a_route(client, store, sms_log):
+    assert client.get("/__test/admin-only").status_code == 401           # nobody signed in
+    assert client.get("/__test/admin-only",
+                      headers={"Cookie": "genzura_session=garbage"}).status_code == 401
+
     sign_in(client, sms_log)
-    assert client.get("/api/admin/stats").status_code == 403
+    assert client.get("/__test/admin-only").status_code == 403           # a normal user
+
+    client.post("/api/auth/logout")
+    add_admin(store)
+    client.post("/api/auth/admin/login", json={"email": "admin@genzura.test", "password": "secret123"})
+    res = client.get("/__test/admin-only")
+    assert res.status_code == 200 and res.get_data(as_text=True) == "ok"
 
 
 # ---------- phone: requesting a code ----------
@@ -338,12 +351,12 @@ def test_every_format_of_a_number_shares_one_allowance(client, sms_log):
 
 
 def test_a_failed_sms_does_not_use_up_the_hourly_allowance(client, store, sms_log, monkeypatch):
-    monkeypatch.setattr(auth, "send_sms", lambda to, msg: False)
+    monkeypatch.setattr(auth, "_send_sms", lambda to, msg: False)
     for _ in range(4):
         assert request_code(client).status_code == 502
     assert store.codes == []                       # unsent codes are removed
 
-    monkeypatch.setattr(auth, "send_sms", lambda to, msg: sms_log.append((to, msg)) or True)
+    monkeypatch.setattr(auth, "_send_sms", lambda to, msg: sms_log.append((to, msg)) or True)
     assert request_code(client).status_code == 200
 
 
@@ -529,8 +542,7 @@ def test_delete_account_reports_a_database_failure(client, sms_log, monkeypatch)
 @pytest.fixture
 def check_env(monkeypatch, store):
     store.checks = {7: {"id": 7, "user_id": None}}
-    monkeypatch.setattr(routes.db, "save_check", lambda *a, **k: 7)
-    monkeypatch.setattr(routes.db, "find_risky_entities", lambda text: [])
+    monkeypatch.setattr(routes.db, "save_check", lambda **kwargs: 7, raising=False)
     monkeypatch.setattr(lookup, "fetch_entities", lambda pairs: [])
     return store
 
@@ -539,6 +551,13 @@ def test_a_signed_in_users_check_is_linked_to_them(client, check_env, sms_log):
     sign_in(client, sms_log)
     res = client.post("/api/check", json={"text": "hello"})
     assert res.status_code == 200
+    assert check_env.checks[7]["user_id"] == 1
+
+
+def test_linking_works_when_save_check_returns_a_row(client, check_env, sms_log, monkeypatch):
+    monkeypatch.setattr(routes.db, "save_check", lambda **kwargs: {"id": 7}, raising=False)
+    sign_in(client, sms_log)
+    client.post("/api/check", json={"text": "hello"})
     assert check_env.checks[7]["user_id"] == 1
 
 
@@ -562,3 +581,110 @@ def test_check_still_works_if_linking_fails(client, check_env, sms_log, monkeypa
 
     monkeypatch.setattr(routes, "attach_check", boom)
     assert client.post("/api/check", json={"text": "hello"}).status_code == 200
+
+
+# ---------- _send_sms (Africa's Talking over the standard library) ----------
+
+class FakeResponse:
+    def __init__(self, status):
+        self.status = status
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+def test_send_sms_posts_to_africas_talking(monkeypatch):
+    monkeypatch.setenv("AT_USERNAME", "genzura")
+    monkeypatch.setenv("AT_API_KEY", "secret-key")
+    seen = {}
+
+    def fake_urlopen(req, timeout):
+        seen.update(url=req.full_url, method=req.get_method(), body=req.data.decode(),
+                    api_key=req.get_header("Apikey"), timeout=timeout)
+        return FakeResponse(201)
+
+    monkeypatch.setattr(auth, "urlopen", fake_urlopen)
+    assert auth._send_sms("+250788123456", "Your code is 123456") is True
+    assert seen["url"] == "https://api.africastalking.com/version1/messaging"
+    assert seen["method"] == "POST"
+    assert seen["api_key"] == "secret-key"
+    assert "username=genzura" in seen["body"] and "to=%2B250788123456" in seen["body"]
+    assert seen["timeout"] == 10
+
+
+def test_send_sms_uses_the_sandbox_for_the_sandbox_user(monkeypatch):
+    monkeypatch.setenv("AT_USERNAME", "sandbox")
+    monkeypatch.setenv("AT_API_KEY", "k")
+    urls = []
+    monkeypatch.setattr(auth, "urlopen", lambda req, timeout: urls.append(req.full_url) or FakeResponse(201))
+    assert auth._send_sms("+250788123456", "hi") is True
+    assert urls == ["https://api.sandbox.africastalking.com/version1/messaging"]
+
+
+def test_send_sms_without_credentials_does_not_call_the_network(monkeypatch):
+    monkeypatch.delenv("AT_USERNAME", raising=False)
+    monkeypatch.delenv("AT_API_KEY", raising=False)
+
+    def boom(req, timeout):
+        raise AssertionError("must not call the network")
+
+    monkeypatch.setattr(auth, "urlopen", boom)
+    assert auth._send_sms("+250788123456", "hi") is False
+
+
+def test_send_sms_returns_false_on_network_errors_and_bad_statuses(monkeypatch):
+    from urllib.error import URLError
+
+    monkeypatch.setenv("AT_USERNAME", "genzura")
+    monkeypatch.setenv("AT_API_KEY", "k")
+
+    def unreachable(req, timeout):
+        raise URLError("no route")
+
+    monkeypatch.setattr(auth, "urlopen", unreachable)
+    assert auth._send_sms("+250788123456", "hi") is False
+
+    monkeypatch.setattr(auth, "urlopen", lambda req, timeout: FakeResponse(500))
+    assert auth._send_sms("+250788123456", "hi") is False
+
+
+def test_send_sms_never_logs_the_message(monkeypatch, caplog):
+    from urllib.error import URLError
+
+    monkeypatch.setenv("AT_USERNAME", "genzura")
+    monkeypatch.setenv("AT_API_KEY", "k")
+
+    def unreachable(req, timeout):
+        raise URLError("no route")
+
+    monkeypatch.setattr(auth, "urlopen", unreachable)
+    auth._send_sms("+250788123456", "Your code is 987654")
+    assert "987654" not in caplog.text
+
+
+# ---------- no SECRET_KEY configured (dev's create_app() does not set one) ----------
+
+def test_sign_in_is_refused_cleanly_without_a_secret_key(client, store, sms_log, monkeypatch):
+    add_admin(store)
+    monkeypatch.delenv("SECRET_KEY")
+
+    res = client.post("/api/auth/admin/login",
+                      json={"email": "admin@genzura.test", "password": "secret123"})
+    assert res.status_code == 503
+    assert set_cookies(res) == []
+
+    request_code(client)
+    code = latest_code(sms_log)
+    assert verify(client, code).status_code == 503
+    assert store.codes[0]["attempts"] == 0 and store.codes[0]["used_at"] is None  # the code was not used up
+
+
+def test_a_stale_cookie_does_not_break_other_routes_without_a_secret_key(client, store, monkeypatch):
+    monkeypatch.delenv("SECRET_KEY")
+    monkeypatch.setattr(routes.db, "save_check", lambda **kwargs: 1, raising=False)
+    monkeypatch.setattr(lookup, "fetch_entities", lambda pairs: [])
+    res = client.post("/api/check", json={"text": "hello"}, headers={"Cookie": "genzura_session=whatever"})
+    assert res.status_code == 200
