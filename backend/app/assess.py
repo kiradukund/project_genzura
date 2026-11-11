@@ -83,9 +83,11 @@ def questions():
 @assess_bp.route("/api/assess", methods=["POST"])
 def assess():
     data = request.get_json(silent=True) or {}
+    if not isinstance(data, dict):
+        return jsonify({"error": "body must be a JSON object"}), 400
 
     context = data.get("context", "job")
-    if context not in VALID_CONTEXTS:
+    if not isinstance(context, str) or context not in VALID_CONTEXTS:
         return jsonify({"error": "context must be job, scholarship, or visa"}), 400
 
     result, error = score_answers(data.get("answers"))

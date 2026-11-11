@@ -102,6 +102,10 @@ def test_context_defaults_to_job(client):
         {"answers": dict(SAFE, contact="carrier pigeon")},  # unknown answer
         {"answers": dict(SAFE, contact=["company"])},  # wrong type
         {"answers": SAFE, "context": "holiday"},       # unknown offer type
+        {"answers": SAFE, "context": ["job"]},         # offer type is not a string
+        {"answers": SAFE, "context": 5},               # offer type is not a string
+        [SAFE],                                        # body is a list, not an object
+        "job",                                         # body is a string, not an object
     ],
 )
 def test_bad_requests_are_rejected(client, payload):
