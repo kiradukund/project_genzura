@@ -84,7 +84,22 @@
     "ribBody": "Stop sending money and report it to the Rwanda Investigation Bureau.",
     "directoryCta": "See all {n} official contacts",
     "promiseTitle": "Our promise",
-    "promise": "Check any overseas job, scholarship or visa offer before you pay. No account needed, and personal details are removed before anything is stored."
+    "promise": "Check any overseas job, scholarship or visa offer before you pay. No account needed, and personal details are removed before anything is stored.",
+    "demo": {
+      "label": "Example: a fake visa offer on WhatsApp. Genzura highlights four red flags and rates it HIGH RISK.",
+      "sender": "Visa Agent",
+      "status": "WhatsApp · +250 78X XXX XXX",
+      "p1": "Congratulations! Your Canada work visa is ",
+      "f1": "100% guaranteed",
+      "p2": ". To keep your place, ",
+      "f2": "pay the 150,000 RWF processing fee",
+      "p3": " by MTN MoMo ",
+      "f3": "before 6pm today",
+      "p4": ". Do not call the office, ",
+      "f4": "contact me on WhatsApp only",
+      "p5": "."
+    },
+    "signLabel": "Red flag"
   },
   "offerType": {
     "label": "What kind of offer is it?",
@@ -154,9 +169,9 @@
     "scholarship": "Scholarship scam",
     "visa": "Visa scam",
     "text": {
-      "job": "URGENT! Hotel jobs in Dubai, salary $1,500 per month. No interview needed, 100% guaranteed visa. Pay the registration fee of 150,000 RWF by Mobile Money before Friday to secure your place. Contact hr.dubaijobs@gmail.com or WhatsApp only.",
-      "scholarship": "Congratulations! You have been selected for a fully funded scholarship in Canada. To secure your slot, send a copy of your passport and the processing fee of $200 through Western Union within 24 hours. Limited slots.",
-      "visa": "Get your UK work visa in 7 days, guaranteed! No IELTS needed. Share your passport and bank account details with our agent and pay the visa fee today. Act now, last chance."
+      "job": "URGENT! Hotel jobs in Dubai, salary 2,000,000 RWF per month. No interview needed, 100% guaranteed visa. Pay the registration fee of 150,000 RWF by MTN MoMo before Friday to secure your place. Contact hr.dubaijobs@gmail.com or WhatsApp only: +250 78X XXX XXX.",
+      "scholarship": "Congratulations! You have been selected for a fully funded scholarship in Canada. To secure your slot, send a copy of your passport and pay the processing fee of 120,000 RWF by MTN MoMo within 24 hours. Contact our agent on WhatsApp: +250 78X XXX XXX. Limited slots.",
+      "visa": "Get your UK work visa in 7 days, guaranteed! No IELTS needed. Share your passport and bank account details with our agent in Kigali and pay the visa fee of 300,000 RWF by MTN MoMo today. Act now, last chance."
     }
   },
   "share": {

@@ -3,9 +3,10 @@ import AlertsSignup from "../components/AlertsSignup";
 import AlreadyPaid from "../components/AlreadyPaid";
 import Channels from "../components/Channels";
 import Faq from "../components/Faq";
-// Hero photo from Pexels (free to use): https://www.pexels.com/photo/3884252/
-import heroBg from "../assets/hero-bg.jpg";
-import heroBgSm from "../assets/hero-bg-sm.jpg";
+import HeroDemo from "../components/HeroDemo";
+// Hero photo from Pexels (free to use): https://www.pexels.com/photo/6238088/
+import heroBg from "../assets/hero-youth.jpg";
+import heroBgSm from "../assets/hero-youth-sm.jpg";
 import { directoryEntries } from "../data/directoryEntries";
 import { useI18n } from "../i18n";
 import { Link } from "../router";
@@ -15,7 +16,12 @@ import Checker from "./Checker";
 // Turn on with VITE_ENABLE_ALERTS=true once SMS and the alerts table are live.
 const ALERTS_ENABLED = import.meta.env.VITE_ENABLE_ALERTS === "true";
 
-const STEPS = ["1", "2", "3"];
+// The 3 steps use the risk colours: green, amber, red.
+const STEPS = [
+  { n: "1", tone: "low" },
+  { n: "2", tone: "medium" },
+  { n: "3", tone: "high" },
+];
 
 // Scam signs the API can flag (labels live in i18n under "flags").
 const SIGNS = [
@@ -60,6 +66,8 @@ export default function Home() {
                 </a>
               </div>
             </div>
+            {/* What the young person in the photo is reading, checked by Genzura */}
+            <HeroDemo />
           </div>
         </section>
 
@@ -77,8 +85,8 @@ export default function Home() {
             {t("home.stepsTitle")}
           </h2>
           <ol className="steps">
-            {STEPS.map((n) => (
-              <li key={n} className="step">
+            {STEPS.map(({ n, tone }) => (
+              <li key={n} className={`step step-${tone}`}>
                 <span className="step-num" aria-hidden="true">
                   {n}
                 </span>
@@ -98,8 +106,36 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="signs" className="section reveal" aria-labelledby="signs-title">
+          <h2 id="signs-title" className="section-title">
+            {t("home.signsTitle")}
+          </h2>
+          <p className="section-intro">{t("home.signsIntro")}</p>
+          <ul className="signs">
+            {SIGNS.map((id) => (
+              <li key={id}>
+                <span className="col-label">{t("home.signLabel")}</span>
+                <strong>{t(`flags.${id}`)}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section id="already-paid" className="section reveal" aria-labelledby="already-paid-title">
           <AlreadyPaid />
+        </section>
+
+        {/* Short banner; the full list is on its own page (/directory). */}
+        <section id="directory" className="section reveal" aria-labelledby="directory-title">
+          <div className="band band-navy">
+            <div>
+              <h2 id="directory-title">{t("directory.title")}</h2>
+              <p>{t("directory.intro")}</p>
+            </div>
+            <Link className="btn-primary btn-arrow" to="/directory">
+              {t("home.directoryCta").replace("{n}", directoryEntries.length)}
+            </Link>
+          </div>
         </section>
 
         <section id="channels" className="section reveal" aria-labelledby="channels-title">
@@ -115,31 +151,6 @@ export default function Home() {
             <AlertsSignup />
           </section>
         )}
-
-        <section id="signs" className="section section-grey reveal" aria-labelledby="signs-title">
-          <h2 id="signs-title" className="section-title">
-            {t("home.signsTitle")}
-          </h2>
-          <p className="section-intro">{t("home.signsIntro")}</p>
-          <ul className="signs">
-            {SIGNS.map((id) => (
-              <li key={id}>{t(`flags.${id}`)}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Short banner; the full list is on its own page (/directory). */}
-        <section id="directory" className="section reveal" aria-labelledby="directory-title">
-          <div className="band band-navy">
-            <div>
-              <h2 id="directory-title">{t("directory.title")}</h2>
-              <p>{t("directory.intro")}</p>
-            </div>
-            <Link className="btn-primary btn-arrow" to="/directory">
-              {t("home.directoryCta").replace("{n}", directoryEntries.length)}
-            </Link>
-          </div>
-        </section>
 
         <section id="faq" className="section reveal" aria-labelledby="faq-title">
           <h2 id="faq-title" className="section-title">

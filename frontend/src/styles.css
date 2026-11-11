@@ -26,13 +26,17 @@
   --grey-50: #f6f7f9;
   --grey-100: #eceff3;
   --grey-200: #dde2e8;
-  --ink: #18222f;
-  --muted: #434d5b;
+  --ink: #000000;
+  --muted: #1a1a1a;
 
   /* Risk levels (darker shades so they read well on white) */
   --risk-high: #c8102e;
   --risk-medium: #b45309;
   --risk-low: #15803d;
+  /* Brighter versions for dark backgrounds */
+  --risk-high-bright: #ff6b7d;
+  --risk-medium-bright: #fbbf24;
+  --risk-low-bright: #4ade80;
 
   --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
   --font-body: "Plus Jakarta Sans Variable", "Segoe UI", Roboto, Arial, sans-serif;
@@ -56,9 +60,7 @@ html {
 html,
 body {
   margin: 0;
-  /* Soft grey page background, a little darker towards the bottom */
-  background: linear-gradient(180deg, #d9d9d9 0%, #c6c6c6 100%) fixed;
-  background-color: #cfcfcf;
+  background: var(--white);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -523,9 +525,9 @@ a {
   background: var(--band-bg);
 }
 
+/* Very light band so a section stands apart, while text keeps full contrast */
 .section-grey {
-  /* Lighter grey strip so these sections stand apart from the page background */
-  --band-bg: #e6e6e6;
+  --band-bg: #f3f6fa;
 }
 
 /* Main colour band (deep Genzura blue). The class name is kept so the markup stays the same. */
@@ -606,8 +608,8 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 72% 30%;
-  /* Mirrored so she faces the headline */
+  object-position: 30% 35%;
+  /* Mirrored so the young person faces the message they are reading */
   transform: scaleX(-1);
 }
 
@@ -631,14 +633,13 @@ a {
 
   .hero-bg {
     left: auto;
-    right: -8%;
-    /* Pushed down so her head has room below the menu bar */
-    top: 60px;
+    right: -4%;
+    top: 0;
     width: auto;
     height: 100%;
     aspect-ratio: 3 / 2;
     object-fit: cover;
-    object-position: 50% 50%;
+    object-position: 50% 40%;
     /* The photo is mirrored, so the side fade goes on its right edge (which shows on the left).
        The second fade softens the top edge into the dark background. */
     -webkit-mask-image:
@@ -674,7 +675,180 @@ a {
   display: grid;
   max-width: 1140px;
   margin: 0 auto;
-  padding: 40px 16px 0;
+  padding: 40px 16px 48px;
+}
+
+/* Wide screens: headline | glass message | the young person in the photo */
+@media (min-width: 900px) {
+  .hero-wrap {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.55fr);
+    align-items: center;
+    gap: 32px;
+    padding-bottom: 0;
+  }
+}
+
+/* ----- Glass demo: a fake WhatsApp offer being checked ----- */
+.demo {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.demo-phone {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
+  background: rgba(7, 26, 46, 0.38);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.demo-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(7, 26, 46, 0.3);
+}
+
+.demo-head strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.demo-head small {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.75rem;
+}
+
+.demo-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 800;
+}
+
+.demo-chat {
+  padding: 16px 16px 8px;
+}
+
+.demo-bubble {
+  position: relative;
+  margin: 0;
+  padding: 12px 14px 22px;
+  border-radius: 4px 14px 14px 14px;
+  background: rgba(7, 26, 46, 0.62);
+  color: #f2f5f7;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.demo-bubble mark {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 1px 3px;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  transition: background 0.35s, box-shadow 0.35s;
+}
+
+.demo-bubble mark.on {
+  background: rgba(220, 47, 69, 0.45);
+  color: #fff;
+  box-shadow: inset 0 -2px 0 #ff6b7d;
+}
+
+.demo-time {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  color: rgba(242, 245, 247, 0.55);
+  font-size: 0.7rem;
+}
+
+/* Flags found + risk meter */
+.demo-result {
+  padding: 8px 16px 18px;
+}
+
+.demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 64px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-chips li {
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  background: rgba(200, 16, 46, 0.85);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s, transform 0.35s;
+}
+
+.demo-chips li.on {
+  opacity: 1;
+  transform: none;
+}
+
+.demo-meter {
+  position: relative;
+  height: 8px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, #4ade80, #fbbf24, #ff6b7d);
+}
+
+.demo-meter span {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--navy-800);
+  border-radius: 50%;
+  background: var(--white);
+  transform: translate(-50%, -50%);
+  transition: left 0.6s ease;
+}
+
+/* The HIGH RISK stamp, over the flags so the message stays readable */
+.demo-stamp {
+  position: absolute;
+  top: 74%;
+  left: 50%;
+  padding: 8px 18px;
+  border: 4px solid #ff6b7d;
+  border-radius: 10px;
+  background: rgba(7, 26, 46, 0.9);
+  color: #ff6b7d;
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-12deg) scale(2.2);
+  pointer-events: none;
+}
+
+.demo-stamp.on {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(-12deg) scale(1);
+  transition: opacity 0.15s, transform 0.3s cubic-bezier(0.2, 1.6, 0.4, 1);
 }
 
 .hero-inner {
@@ -685,6 +859,7 @@ a {
 
 .hero h1 {
   max-width: 14ch;
+  text-wrap: balance;
   margin: 0 0 16px;
   font-family: var(--font-display);
   font-size: clamp(2.6rem, 7vw, 4.4rem);
@@ -799,7 +974,19 @@ a {
   font-weight: 600;
   font-style: italic;
   line-height: 1;
-  opacity: 0.6;
+}
+
+/* Risk colours: green, amber, red */
+.step-low .step-num {
+  color: var(--risk-low-bright);
+}
+
+.step-medium .step-num {
+  color: var(--risk-medium-bright);
+}
+
+.step-high .step-num {
+  color: var(--risk-high-bright);
 }
 
 .step h3 {
@@ -1409,46 +1596,24 @@ input:focus {
 }
 
 /* ---------- Ways to use Genzura ---------- */
+/* Same card system as the Official contacts: joined white columns */
 .channels {
   display: grid;
-  gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* Card: photo on top, solid ink-blue body underneath */
 .channel {
-  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  background: var(--navy-800);
-  color: var(--white);
-  box-shadow: 0 10px 28px rgba(7, 26, 46, 0.14);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.channel:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(7, 26, 46, 0.24);
+  background: var(--white);
 }
 
 .channel-photo {
-  position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: var(--navy-700);
-}
-
-/* Soft shade at the bottom of the photo so it meets the blue body smoothly */
-.channel-photo::after {
-  content: "";
-  position: absolute;
-  inset: 55% 0 0;
-  background: linear-gradient(180deg, transparent, rgba(12, 42, 71, 0.55));
-  pointer-events: none;
+  background: var(--grey-100);
 }
 
 .channel-photo img {
@@ -1460,78 +1625,41 @@ input:focus {
 }
 
 .channel:hover .channel-photo img {
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
 .channel-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  padding: 26px 26px 30px;
+  padding: 24px 24px 28px;
 }
 
-/* Short blue bar above the title */
-.channel-body::before {
-  content: "";
-  width: 36px;
-  height: 3px;
-  margin-bottom: 16px;
-  border-radius: 3px;
-  background: var(--brand-400);
-  transition: width 0.25s;
-}
-
-.channel:hover .channel-body::before {
-  width: 64px;
-}
-
-/* Status tag sits on the photo, top left */
-.channel .pill {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 1;
-  margin: 0;
-  padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--navy-800);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.channel .pill.live {
-  background: var(--risk-low);
-  color: var(--white);
-}
-
+/* Status label: green when live, amber when coming soon */
 .pill {
   display: inline-block;
   margin-bottom: 8px;
-  padding: 3px 12px;
-  border-radius: var(--pill);
-  background: var(--grey-100);
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 700;
+  color: var(--risk-medium);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .pill.live {
-  background: #e3f4ea;
   color: var(--risk-low);
 }
 
 .channel h3 {
   margin: 0 0 10px;
-  color: var(--white);
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 600;
-  line-height: 1.2;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--red-600);
+  color: var(--brand-700);
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .channel p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-  line-height: 1.6;
+  color: var(--ink);
 }
 
 @media (min-width: 720px) {
@@ -1540,10 +1668,9 @@ input:focus {
   }
 }
 
-/* ---------- Warning signs (red-line list) ---------- */
+/* ---------- Warning signs ---------- */
 .signs {
   display: grid;
-  gap: 12px;
   max-width: 960px;
   margin: 0 auto;
   padding: 0;
@@ -1552,32 +1679,58 @@ input:focus {
 
 .signs li {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--grey-200);
-  border-radius: var(--radius);
-  background: var(--white);
-  font-weight: 600;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 24px;
 }
 
-.signs li::before {
-  content: "!";
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--red-50);
-  color: var(--red-600);
+.signs strong {
+  color: var(--brand-700);
+  font-size: 1.05rem;
   font-weight: 800;
-  flex-shrink: 0;
+  line-height: 1.35;
 }
 
 @media (min-width: 720px) {
   .signs {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ---------- One card system ----------
+   Every card list looks like the Official contacts cards:
+   joined white columns, thin dividers, one shadow around the group,
+   small coloured label, bold blue title, thin red lines. */
+.channels,
+.signs,
+.faq {
+  border-top: 1px solid var(--grey-200);
+  border-left: 1px solid var(--grey-200);
+  background: var(--white);
+  box-shadow: 0 10px 30px rgba(7, 26, 46, 0.08);
+}
+
+.channel,
+.signs li,
+.faq details {
+  border-right: 1px solid var(--grey-200);
+  border-bottom: 1px solid var(--grey-200);
+  transition: background 0.2s;
+}
+
+.channel:hover,
+.signs li:hover,
+.faq details:hover {
+  background: var(--grey-50);
+}
+
+/* Small uppercase label above a card title (red = warning) */
+.col-label {
+  color: var(--red-600);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 /* ---------- Wide banners ---------- */
@@ -1630,21 +1783,20 @@ input:focus {
 .faq {
   max-width: 820px;
   margin: 0 auto;
-  border-top: 1px solid var(--grey-200);
 }
 
 .faq details {
-  border-bottom: 1px solid var(--grey-200);
+  padding: 0 24px;
 }
 
 .faq summary {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 60px;
-  padding: 14px 48px 14px 0;
-  color: var(--navy-800);
-  font-weight: 700;
+  min-height: 64px;
+  padding: 16px 40px 16px 0;
+  color: var(--brand-700);
+  font-weight: 800;
   cursor: pointer;
   list-style: none;
 }
@@ -1656,8 +1808,8 @@ input:focus {
 .faq summary::after {
   content: "+";
   position: absolute;
-  right: 8px;
-  color: var(--brand-600);
+  right: 0;
+  color: var(--red-600);
   font-size: 1.6rem;
   font-weight: 400;
   transition: transform 0.2s;
@@ -1669,8 +1821,9 @@ input:focus {
 
 .faq details p {
   margin: 0;
-  padding: 0 0 18px;
-  color: var(--muted);
+  padding: 12px 0 20px;
+  border-top: 1px solid var(--red-600);
+  color: var(--ink);
 }
 
 /* ---------- Alerts signup ---------- */

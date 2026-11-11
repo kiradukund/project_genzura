@@ -2,11 +2,13 @@ import logo from "../assets/logo.png";
 import { useI18n } from "../i18n";
 import { Link } from "../router";
 
+// Same order as the home page and the top menu.
 const LINKS = [
   { href: "/#how", key: "nav.how" },
   { href: "/#check", key: "nav.check" },
   { href: "/#signs", key: "nav.signs" },
   { href: "/#already-paid", key: "nav.alreadyPaid" },
+  { href: "/directory", key: "nav.directory" },
   { href: "/#faq", key: "footer.faq" },
 ];
 
