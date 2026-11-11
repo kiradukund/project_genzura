@@ -1,4 +1,3 @@
-# OWNER: Abay
 import pytest
 
 from app.rules import add_flag, evaluate, verdict_for
