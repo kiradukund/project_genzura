@@ -1,14 +1,19 @@
-import heroPerson from "../assets/hero-person.webp";
-import heroPersonSm from "../assets/hero-person-sm.webp";
-import BackToTop from "../components/BackToTop";
+// OWNER: Kuol - Home page
+import AlertsSignup from "../components/AlertsSignup";
+import AlreadyPaid from "../components/AlreadyPaid";
 import Channels from "../components/Channels";
 import Faq from "../components/Faq";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
+// Hero photo from Pexels (free to use): https://www.pexels.com/photo/3884252/
+import heroBg from "../assets/hero-bg.jpg";
+import heroBgSm from "../assets/hero-bg-sm.jpg";
+import { directoryEntries } from "../data/directoryEntries";
 import { useI18n } from "../i18n";
+import { Link } from "../router";
 import useReveal from "../useReveal";
 import Checker from "./Checker";
-import Directory from "./Directory";
+
+// Turn on with VITE_ENABLE_ALERTS=true once SMS and the alerts table are live.
+const ALERTS_ENABLED = import.meta.env.VITE_ENABLE_ALERTS === "true";
 
 const STEPS = ["1", "2", "3"];
 
@@ -29,49 +34,45 @@ export default function Home() {
   useReveal();
 
   return (
+    // Header, Footer and BackToTop are in App.jsx so every page shares them.
     <>
-      <Header />
       <main id="top">
         <section className="hero">
+          <img
+            className="hero-bg"
+            src={heroBg}
+            srcSet={`${heroBgSm} 900w, ${heroBg} 1920w`}
+            sizes="100vw"
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+          />
           <div className="hero-wrap">
             <div className="hero-inner">
               <h1>{t("title")}</h1>
               <p className="hero-sub">{t("subtitle")}</p>
               <div className="hero-actions">
-                <a className="btn-primary" href="#check">
+                <a className="btn-primary btn-arrow" href="#check">
                   {t("home.cta")}
                 </a>
-                <a className="btn-ghost" href="#how">
+                <a className="btn-ghost btn-arrow" href="#how">
                   {t("home.stepsTitle")}
                 </a>
-              </div>
-              <p className="hero-trust">{t("home.trust")}</p>
-            </div>
-
-            <div className="hero-visual" aria-hidden="true">
-              <div className="hero-orb" />
-              <img
-                className="hero-person"
-                src={heroPerson}
-                srcSet={`${heroPersonSm} 292w, ${heroPerson} 540w`}
-                sizes="(min-width: 900px) 380px, 220px"
-                alt=""
-                width="540"
-                height="814"
-                fetchpriority="high"
-                decoding="async"
-              />
-              {/* Decorative preview of a result, shown on wide screens only. */}
-              <div className="hero-card">
-                <span className="hero-card-badge">{t("risk.high_risk")}</span>
-                <span className="hero-card-flag">{t("flags.upfront_fee")}</span>
-                <span className="hero-card-flag">{t("flags.guaranteed_outcome")}</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="how" className="section reveal" aria-labelledby="steps-title">
+        {/* Short promise strip under the hero */}
+        <section className="promise" aria-label={t("home.promiseTitle")}>
+          <div className="promise-inner">
+            <h2>{t("home.promiseTitle")}</h2>
+            <p>{t("home.promise")}</p>
+            <p className="promise-trust">{t("home.trust")}</p>
+          </div>
+        </section>
+
+        <section id="how" className="section section-red reveal" aria-labelledby="steps-title">
           <h2 id="steps-title" className="section-title">
             {t("home.stepsTitle")}
           </h2>
@@ -88,13 +89,17 @@ export default function Home() {
           </ol>
         </section>
 
-        <section id="check" className="section check-section" aria-labelledby="check-title">
+        <section id="check" className="section section-grey check-section" aria-labelledby="check-title">
           <h2 id="check-title" className="section-title">
             {t("home.checkTitle")}
           </h2>
           <div className="check-card">
             <Checker />
           </div>
+        </section>
+
+        <section id="already-paid" className="section reveal" aria-labelledby="already-paid-title">
+          <AlreadyPaid />
         </section>
 
         <section id="channels" className="section reveal" aria-labelledby="channels-title">
@@ -105,7 +110,13 @@ export default function Home() {
           <Channels />
         </section>
 
-        <section id="signs" className="section reveal" aria-labelledby="signs-title">
+        {ALERTS_ENABLED && (
+          <section id="alerts" className="section reveal" aria-labelledby="alerts-title">
+            <AlertsSignup />
+          </section>
+        )}
+
+        <section id="signs" className="section section-grey reveal" aria-labelledby="signs-title">
           <h2 id="signs-title" className="section-title">
             {t("home.signsTitle")}
           </h2>
@@ -117,8 +128,17 @@ export default function Home() {
           </ul>
         </section>
 
-        <section id="directory" className="section reveal">
-          <Directory />
+        {/* Short banner; the full list is on its own page (/directory). */}
+        <section id="directory" className="section reveal" aria-labelledby="directory-title">
+          <div className="band band-navy">
+            <div>
+              <h2 id="directory-title">{t("directory.title")}</h2>
+              <p>{t("directory.intro")}</p>
+            </div>
+            <Link className="btn-primary btn-arrow" to="/directory">
+              {t("home.directoryCta").replace("{n}", directoryEntries.length)}
+            </Link>
+          </div>
         </section>
 
         <section id="faq" className="section reveal" aria-labelledby="faq-title">
@@ -127,21 +147,7 @@ export default function Home() {
           </h2>
           <Faq />
         </section>
-
-        <section id="report" className="section reveal">
-          <div className="rib-band">
-            <div>
-              <h2>{t("home.ribTitle")}</h2>
-              <p>{t("home.ribBody")}</p>
-            </div>
-            <a className="btn-danger" href="tel:166">
-              {t("actions.reportRib")}
-            </a>
-          </div>
-        </section>
       </main>
-      <Footer />
-      <BackToTop />
     </>
   );
 }
