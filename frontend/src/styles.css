@@ -1275,24 +1275,6 @@ input:focus {
   margin: 0 0 8px;
 }
 
-.ambassadors {
-  margin: 0 0 8px;
-  padding: 0;
-  list-style: none;
-}
-
-.ambassadors li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--grey-200);
-}
-
-.ambassadors a {
-  font-weight: 700;
-}
-
 /* Send result by SMS */
 .sms-form {
   margin-top: 16px;
@@ -2423,4 +2405,40 @@ input:focus {
 .directory .directory-card p:nth-of-type(2) a:hover {
   background: var(--brand-700);
   text-decoration: none;
+}
+
+/* ----- Guided assessment (/assess) -----
+   Alier's Assess.css stays as it is; these rules are more specific
+   so the page matches the light theme: white answer cards, dark text. */
+.assess .assess-question legend {
+  color: var(--ink);
+}
+
+.assess .assess-progress {
+  color: var(--red-600);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.assess .assess-answer {
+  border: 1px solid var(--grey-200);
+  background: var(--white);
+  color: var(--ink);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.assess .assess-answer:hover {
+  background: var(--grey-50);
+}
+
+.assess .assess-answer.active {
+  border-color: var(--brand-700);
+  background: var(--brand-50);
+  box-shadow: inset 4px 0 0 var(--brand-700);
+}
+
+.assess .assess-answer input {
+  accent-color: var(--brand-700);
 }

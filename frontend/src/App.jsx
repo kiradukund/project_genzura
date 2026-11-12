@@ -7,7 +7,7 @@ import Directory from "./pages/Directory";
 import Home from "./pages/Home";
 import { RouterProvider, useLocation } from "./router";
 // Import each page here when its owner says it is ready:
-// import Assess from "./pages/Assess";
+import Assess from "./pages/Assess";
 // import Trends from "./pages/Trends";
 // import Agencies from "./pages/Agencies";
 // import SignIn from "./pages/SignIn";
@@ -23,13 +23,21 @@ function DirectoryPage() {
   );
 }
 
+function AssessPage() {
+  return (
+    <main id="top" className="section page">
+      <Assess />
+    </main>
+  );
+}
+
 // One line per page. To plug in a finished page:
 //   1. uncomment its import above and its line below
 //   2. add its menu link in components/Header.jsx (PAGE_LINKS)
 export const ROUTES = {
   "/": Home,
   "/directory": DirectoryPage,
-  // "/assess": Assess,
+  "/assess": AssessPage,
   // "/trends": Trends,
   // "/agencies": Agencies,
   // "/signin": SignIn,
