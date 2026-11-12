@@ -1,20 +1,31 @@
 -- OWNER: Abay
--- Migration 002: phone numbers, emails and links seen in scam reports.
--- Values are NEVER stored in clear: value_hash is an HMAC-SHA256 (keyed with
--- ENTITY_HASH_KEY) of "<kind>:<normalized value>", see backend/app/lookup.py.
---
--- PROPOSED columns: confirm with Chol before merging (his moderation sets `status`).
+-- Migration 004: phone + SMS-code accounts.
+-- Phone numbers are NEVER stored: phone_hash is an HMAC-SHA256 keyed with
+-- PHONE_HASH_KEY (a different key from the entities table, so the two cannot
+-- be linked). admin_users already exists in schema.sql and is unchanged.
 
-CREATE TABLE IF NOT EXISTS entities (
+CREATE TABLE IF NOT EXISTS users (
     id            SERIAL PRIMARY KEY,
-    kind          VARCHAR(5)  NOT NULL CHECK (kind IN ('phone', 'email', 'link')),
-    value_hash    CHAR(64)    NOT NULL,
-    report_count  INTEGER     NOT NULL DEFAULT 0 CHECK (report_count >= 0),
-    status        VARCHAR(12) NOT NULL DEFAULT 'unknown'
-                  CHECK (status IN ('unknown', 'flagged', 'blacklisted')),
-    first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    last_seen_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    UNIQUE (kind, value_hash)
+    phone_hash    CHAR(64)    NOT NULL UNIQUE,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_login_at TIMESTAMPTZ
 );
 
-CREATE INDEX IF NOT EXISTS idx_entities_status ON entities (status);
+CREATE TABLE IF NOT EXISTS sms_codes (
+    id          SERIAL PRIMARY KEY,
+    phone_hash  CHAR(64)    NOT NULL,
+    code_hash   CHAR(64)    NOT NULL,   -- keyed hash of the 6-digit code, never the code
+    attempts    INTEGER     NOT NULL DEFAULT 0 CHECK (attempts >= 0),
+    expires_at  TIMESTAMPTZ NOT NULL,   -- created_at + 5 minutes
+    used_at     TIMESTAMPTZ,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Serves both "newest live code" and "requests in the last hour".
+CREATE INDEX IF NOT EXISTS idx_sms_codes_phone_created ON sms_codes (phone_hash, created_at);
+
+-- "My checks": a signed-in user's checks. Deleting the account deletes them.
+ALTER TABLE checks
+    ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE;
+
+CREATE INDEX IF NOT EXISTS idx_checks_user_id ON checks (user_id);
