@@ -2183,7 +2183,8 @@ input:focus {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  /* Heading and text sit at the top of the card */
+  justify-content: flex-start;
   min-height: 260px;
   padding: 32px 28px;
   overflow: hidden;
@@ -2208,7 +2209,9 @@ input:focus {
 }
 
 .paid-panel-arrow {
-  margin-top: 18px;
+  /* The arrow stays at the bottom of the card */
+  margin-top: auto;
+  padding-top: 18px;
   color: #ff6b7f;
   font-size: 2.2rem;
   line-height: 1;
