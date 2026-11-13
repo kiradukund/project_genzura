@@ -113,7 +113,19 @@
     "invalid": "Enter a valid Rwandan phone number.",
     "failed": "Could not subscribe right now. Try again later."
   },
-  "agencies": {},
+  "agencies": {
+    "title": "Is this agency licensed?",
+    "warning": "Rwanda has not licensed any agency to recruit people for jobs abroad yet. If someone says they are a licensed agency for overseas jobs, treat it as a warning sign.",
+    "searchLabel": "Agency name",
+    "placeholder": "e.g. Gulf Jobs Ltd",
+    "check": "Check",
+    "licensed": "This agency is on the official list.",
+    "notLicensed": "not on any official list. No agency is licensed for jobs abroad yet.",
+    "verifyTitle": "Verify with official contacts",
+    "asOf": "Information checked on",
+    "loading": "Loading...",
+    "error": "Could not load agency information."
+  },
   "appName": "Genzura",
   "title": "Check before you pay",
   "subtitle": "Verify overseas job offers, scholarships and visas to avoid scams",
