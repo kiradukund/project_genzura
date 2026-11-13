@@ -35,10 +35,14 @@ def submit_report():
         return jsonify({"error": "context must be job, scholarship, or visa"}), 400
 
     check_id = data.get("check_id")
-    contact = (data.get("contact") or "").strip()
-    if contact and not isinstance(contact, str):
+    if check_id is not None and not isinstance(check_id, int):
+        return jsonify({"error": "check_id must be a number"}), 400
+
+    contact_raw = data.get("contact")
+    if contact_raw is not None and not isinstance(contact_raw, str):
         return jsonify({"error": "contact must be a string"}), 400
-    if contact and len(contact) > 200:
+    contact = (contact_raw or "").strip()
+    if len(contact) > 200:
         return jsonify({"error": "contact must be at most 200 characters"}), 400
 
     masked_text = redact(text)
@@ -49,7 +53,11 @@ def submit_report():
     except Exception:
         log.exception("Could not record report entities")
 
-    conn = _get_conn()
+    try:
+        conn = _get_conn()
+    except Exception:
+        log.exception("DB unavailable")
+        return jsonify({"error": "service unavailable"}), 503
     try:
         with conn.cursor() as cur:
             cur.execute(
@@ -74,7 +82,11 @@ def submit_report():
 @require_admin
 def list_reports():
     status = request.args.get("status", "pending")
-    conn = _get_conn()
+    try:
+        conn = _get_conn()
+    except Exception:
+        log.exception("DB unavailable")
+        return jsonify({"error": "service unavailable"}), 503
     try:
         with conn.cursor() as cur:
             cur.execute(
@@ -106,7 +118,11 @@ def approve_report(report_id):
     data = request.get_json(silent=True) or {}
     note = data.get("note", "")
 
-    conn = _get_conn()
+    try:
+        conn = _get_conn()
+    except Exception:
+        log.exception("DB unavailable")
+        return jsonify({"error": "service unavailable"}), 503
     try:
         with conn.cursor() as cur:
             cur.execute(
@@ -151,7 +167,11 @@ def reject_report(report_id):
     data = request.get_json(silent=True) or {}
     note = data.get("note", "")
 
-    conn = _get_conn()
+    try:
+        conn = _get_conn()
+    except Exception:
+        log.exception("DB unavailable")
+        return jsonify({"error": "service unavailable"}), 503
     try:
         with conn.cursor() as cur:
             cur.execute(
