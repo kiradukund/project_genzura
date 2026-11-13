@@ -1,23 +1,19 @@
+// OWNER: Kuol - Ways to use Genzura (website, USSD, SMS)
 import { useI18n } from "../i18n";
+// Photos from Pexels (free to use, no credit required: https://www.pexels.com/license/)
+//   website: https://www.pexels.com/photo/4560079/
+//   ussd:    https://www.pexels.com/photo/14127221/
+//   sms:     https://www.pexels.com/photo/9898391/
+import smsPhoto from "../assets/channels/sms.jpg";
+import ussdPhoto from "../assets/channels/ussd.jpg";
+import websitePhoto from "../assets/channels/website.jpg";
 
-// The three ways to use Genzura from the feature spec. USSD and SMS are
-// still being built (Abay), so they are marked "Coming soon".
+// The three ways to use Genzura. USSD and SMS are still being built,
+// so they are marked "Coming soon". `focus` picks which part of the photo stays in view.
 const CHANNELS = [
-  {
-    id: "web",
-    live: true,
-    icon: "M3 5h18v12H3z M8 21h8 M12 17v4",
-  },
-  {
-    id: "ussd",
-    live: false,
-    icon: "M7 2h10v20H7z M10 18h4 M10 6h1 M13 6h1 M10 9h1 M13 9h1 M10 12h1 M13 12h1",
-  },
-  {
-    id: "sms",
-    live: false,
-    icon: "M4 4h16v12H8l-4 4z M8 9h8 M8 12h5",
-  },
+  { id: "web", live: true, photo: websitePhoto, focus: "60% 60%" },
+  { id: "ussd", live: false, photo: ussdPhoto, focus: "50% 40%" },
+  { id: "sms", live: false, photo: smsPhoto, focus: "50% 55%" },
 ];
 
 export default function Channels() {
@@ -25,18 +21,18 @@ export default function Channels() {
 
   return (
     <ul className="channels">
-      {CHANNELS.map((c) => (
-        <li key={c.id} className="channel">
-          <div className="channel-top">
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="channel-icon">
-              <path d={c.icon} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span className={`pill ${c.live ? "live" : ""}`}>
-              {c.live ? t("channels.available") : t("channels.soon")}
-            </span>
+      {CHANNELS.map(({ id, live, photo, focus }) => (
+        <li key={id} className="channel">
+          <div className="channel-photo">
+            <img src={photo} alt="" loading="lazy" decoding="async" style={{ objectPosition: focus }} />
           </div>
-          <h3>{t(`channels.${c.id}.title`)}</h3>
-          <p>{t(`channels.${c.id}.body`)}</p>
+          <div className="channel-body">
+            <span className={`pill ${live ? "live" : ""}`}>
+              {live ? t("channels.available") : t("channels.soon")}
+            </span>
+            <h3>{t(`channels.${id}.title`)}</h3>
+            <p>{t(`channels.${id}.body`)}</p>
+          </div>
         </li>
       ))}
     </ul>
