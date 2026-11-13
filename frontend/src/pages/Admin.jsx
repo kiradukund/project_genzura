@@ -43,8 +43,9 @@ export default function Admin() {
           setStatus("ready");
         }
       })
-      .catch(() => {
-        if (!cancelled) setStatus("error");
+      .catch((err) => {
+        if (cancelled) return;
+        setStatus(err.status === 401 || err.status === 403 ? "denied" : "error");
       });
     return () => {
       cancelled = true;
@@ -56,6 +57,8 @@ export default function Admin() {
     content = <p className="section-intro">{t("admin.loading")}</p>;
   } else if (status === "error") {
     content = <p className="section-intro">{t("admin.error")}</p>;
+  } else if (status === "denied") {
+    content = <p className="section-intro">{t("admin.signInRequired")}</p>;
   } else if (stats.total === 0) {
     content = <p className="section-intro">{t("admin.noData")}</p>;
   } else {

@@ -94,6 +94,7 @@
     "suspicious": "Suspicious",
     "loading": "Loading stats...",
     "error": "Could not load stats.",
+    "signInRequired": "Please sign in with an admin account to see the dashboard.",
     "checksPerDay": "Checks per day (last 30 days)",
     "scamTypes": "Scam types",
     "topFlags": "Top red flags",
