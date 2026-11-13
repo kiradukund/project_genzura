@@ -7,7 +7,7 @@ def create_app():
     load_dotenv()
     app = Flask(__name__)
     CORS(app)
-
+    
     from .routes import api_bp
     from .lookup import lookup_bp
     from .auth import auth_bp
