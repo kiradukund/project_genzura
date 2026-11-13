@@ -1,7 +1,11 @@
 import "./Admin.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useI18n } from "../i18n";
+import { getStats } from "../api/admin.js";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Wraps each value in quotes and doubles any quote inside it, so commas don't break the columns.
 function csvCell(value) {
@@ -26,27 +30,91 @@ function downloadCsv(rows) {
 
 export default function Admin() {
   const { t } = useI18n();
+  const [stats, setStats] = useState(null);
+  const [status, setStatus] = useState("loading");
   const [domains] = useState([]);
 
+  useEffect(() => {
+    let cancelled = false;
+    getStats()
+      .then((data) => {
+        if (!cancelled) {
+          setStats(data);
+          setStatus("ready");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("error");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  let content;
+  if (status === "loading") {
+    content = <p className="section-intro">{t("admin.loading")}</p>;
+  } else if (status === "error") {
+    content = <p className="section-intro">{t("admin.error")}</p>;
+  } else if (stats.total === 0) {
+    content = <p className="section-intro">{t("admin.noData")}</p>;
+  } else {
+    const byVerdict = stats.by_verdict || {};
+    const byContext = stats.by_context || {};
+    const pieData = {
+      labels: [t("offerType.job"), t("offerType.scholarship"), t("offerType.visa")],
+      datasets: [
+        {
+          data: [byContext.job || 0, byContext.scholarship || 0, byContext.visa || 0],
+          backgroundColor: ["#d4af37", "#f5f1e6", "#8a9bb5"],
+        },
+      ],
+    };
+
+    content = (
+      <>
+        <div className="kpi-grid">
+          <div className="kpi"><span>{t("admin.totalChecks")}</span><strong>{stats.total.toLocaleString()}</strong></div>
+          <div className="kpi"><span>{t("admin.highRisk")}</span><strong>{(byVerdict.high_risk || 0).toLocaleString()}</strong></div>
+          <div className="kpi"><span>{t("admin.suspicious")}</span><strong>{(byVerdict.suspicious || 0).toLocaleString()}</strong></div>
+        </div>
+
+        <h3>{t("admin.checksPerDay")}</h3>
+        {stats.per_day.length === 0 ? (
+          <p className="section-intro">{t("admin.noData")}</p>
+        ) : (
+          <ul>
+            {stats.per_day.map((d) => (
+              <li key={d.day}>{d.day}: {d.count}</li>
+            ))}
+          </ul>
+        )}
+
+        <h3>{t("admin.scamTypes")}</h3>
+        <div className="pie">
+          <Pie data={pieData} />
+        </div>
+
+        <h3>{t("admin.topFlags")}</h3>
+        {stats.top_flags.length === 0 ? (
+          <p className="section-intro">{t("admin.noData")}</p>
+        ) : (
+          <ol>
+            {stats.top_flags.map((f) => (
+              <li key={f.flag}>{t(`flags.${f.flag}`)}: {f.count}</li>
+            ))}
+          </ol>
+        )}
+      </>
+    );
+  }
 
   return (
     <div className="admin">
       <h2 className="section-title">{t("admin.title")}</h2>
       <p className="section-intro">{t("admin.intro")}</p>
 
-           <div className="kpi-grid">
-        <div className="kpi"><span>{t("admin.totalChecks")}</span><strong>—</strong></div>
-        <div className="kpi"><span>{t("admin.highRisk")}</span><strong>—</strong></div>
-        <div className="kpi"><span>{t("admin.activePatterns")}</span><strong>—</strong></div>
-      </div>
-
-      <h3>{t("admin.checksPerDay")}</h3>
-      <p className="section-intro">{t("admin.checksPerDayWaiting")}</p>
-
-      <h3>{t("admin.scamTypes")}</h3>
-      <div className="pie">
-              <p className="section-intro">{t("admin.noData")}</p>
-      </div>
+      {content}
 
       <h3>{t("admin.trendingDomains")}</h3>
       {domains.length === 0 ? (

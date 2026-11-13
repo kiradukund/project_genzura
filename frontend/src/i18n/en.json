@@ -61,15 +61,17 @@
   },
   "auth": {},
   "myChecks": {},
-  "admin": {
+    "admin": {
     "title": "Admin intelligence dashboard",
-    "intro": "Sample data. Real figures appear when the admin API is ready.",
+    "intro": "Live figures from checks saved by Genzura.",
     "totalChecks": "Total checks",
     "highRisk": "High-risk",
-    "activePatterns": "Active patterns",
-    "checksPerDay": "Checks per day",
-    "checksPerDayWaiting": "Waiting for live data. This chart appears when the admin stats are connected.",
+    "suspicious": "Suspicious",
+    "loading": "Loading stats...",
+    "error": "Could not load stats.",
+    "checksPerDay": "Checks per day (last 30 days)",
     "scamTypes": "Scam types",
+    "topFlags": "Top red flags",
     "trendingDomains": "Trending domains",
     "noData": "No data yet.",
     "downloadCsv": "Download CSV"
