@@ -14,7 +14,12 @@ def _client():
     return create_app().test_client()
 
 
+def _as_admin(monkeypatch):
+    monkeypatch.setattr("app.auth.current_session", lambda: {"k": "admin"})
+
+
 def test_stats_returns_data(monkeypatch):
+    _as_admin(monkeypatch)
     monkeypatch.setattr("app.admin.get_stats", lambda: FAKE)
     r = _client().get("/api/admin/stats")
     assert r.status_code == 200
@@ -22,8 +27,21 @@ def test_stats_returns_data(monkeypatch):
 
 
 def test_stats_db_down_returns_503(monkeypatch):
+    _as_admin(monkeypatch)
     def boom():
         raise RuntimeError("no db")
     monkeypatch.setattr("app.admin.get_stats", boom)
     r = _client().get("/api/admin/stats")
     assert r.status_code == 503
+
+
+def test_stats_not_logged_in_returns_401(monkeypatch):
+    monkeypatch.setattr("app.auth.current_session", lambda: None)
+    r = _client().get("/api/admin/stats")
+    assert r.status_code == 401
+
+
+def test_stats_normal_user_returns_403(monkeypatch):
+    monkeypatch.setattr("app.auth.current_session", lambda: {"k": "user", "id": 1})
+    r = _client().get("/api/admin/stats")
+    assert r.status_code == 403
