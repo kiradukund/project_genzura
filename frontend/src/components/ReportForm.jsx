@@ -1,8 +1,10 @@
 // OWNER: Chol - Report a scam form
 import { useState } from "react";
+import { useI18n } from "../i18n";
 import { submitReport } from "../api/reports";
 
 export default function ReportForm({ checkId }) {
+  const { t } = useI18n();
   const [text, setText] = useState("");
   const [contact, setContact] = useState("");
   const [status, setStatus] = useState(null);
@@ -18,26 +20,26 @@ export default function ReportForm({ checkId }) {
     }
   }
 
-  if (status === "done") return <p>Thank you. Your report has been submitted.</p>;
+  if (status === "done") return <p>{t("report.done")}</p>;
 
   return (
     <form onSubmit={handleSubmit}>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Paste the suspicious message here"
+        placeholder={t("report.placeholder")}
         required
         rows={4}
       />
       <input
         value={contact}
         onChange={(e) => setContact(e.target.value)}
-        placeholder="Your phone or email (optional)"
+        placeholder={t("report.contactPlaceholder")}
       />
       <button type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Submitting..." : "Report this scam"}
+        {status === "sending" ? t("report.submitting") : t("report.submit")}
       </button>
-      {status === "error" && <p>Something went wrong. Please try again.</p>}
+      {status === "error" && <p>{t("report.error")}</p>}
     </form>
   );
 }

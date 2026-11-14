@@ -101,7 +101,14 @@
     "noData": "No data yet.",
     "downloadCsv": "Download CSV"
   },
-  "report": {},
+  "report": {
+    "placeholder": "Paste the suspicious message here",
+    "contactPlaceholder": "Your phone or email (optional)",
+    "submit": "Report this scam",
+    "submitting": "Submitting...",
+    "done": "Thank you. Your report has been submitted.",
+    "error": "Something went wrong. Please try again."
+  },
   "alerts": {
     "title": "Get scam alerts by SMS",
     "intro": "Once a week we text you the scam sign we see most, so you can spot it first. Free. Reply STOP at any time to end it.",
