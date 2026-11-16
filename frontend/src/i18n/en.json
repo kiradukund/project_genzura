@@ -161,11 +161,15 @@
     "report": "Report a scam",
     "directory": "Official contacts",
     "alreadyPaid": "Already paid?",
+    "agencies": "Agencies",
+    "signIn": "Sign in",
     "home": "Back to home",
     "notFound": "Page not found"
   },
   "home": {
     "cta": "Check an offer now",
+    "reportTitle": "Report this offer",
+    "reportIntro": "Think it is a scam? Send it to the Genzura team. Your report helps us warn other young people.",
     "trust": "Free · Private · Results in seconds",
     "stepsTitle": "How it works",
     "steps": {
