@@ -100,7 +100,20 @@
     "topFlags": "Top red flags",
     "trendingDomains": "Trending domains",
     "noData": "No data yet.",
-    "downloadCsv": "Download CSV"
+    "downloadCsv": "Download CSV",
+    "reportsTitle": "Scam reports to review",
+    "tab_pending": "Pending",
+    "tab_approved": "Approved",
+    "tab_rejected": "Rejected",
+    "colMessage": "Message (masked)",
+    "colContact": "Contact",
+    "colReceived": "Received",
+    "colAction": "Action",
+    "notePlaceholder": "Note (optional)",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noReports": "No reports here.",
+    "reportsError": "Could not load reports."
   },
   "report": {
     "placeholder": "Paste the suspicious message here",
