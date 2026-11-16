@@ -38,3 +38,7 @@
 /frontend/src/api/auth.js @abay-tessema
 /frontend/src/api/reports.js @Chol-Mach-Kuol
 /frontend/src/api/alerts.js @k-kuol
+/frontend/src/components/ReportQueue.jsx @didier-abizera
+/frontend/src/pages/Admin.css @didier-abizera
+/frontend/src/pages/Assess.css @apiel-max
+/frontend/src/i18n/rw.json @apiel-max
