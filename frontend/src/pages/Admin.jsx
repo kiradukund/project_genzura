@@ -4,6 +4,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useI18n } from "../i18n";
 import { getStats } from "../api/admin.js";
+import ReportQueue from "../components/ReportQueue.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -118,6 +119,8 @@ export default function Admin() {
       <p className="section-intro">{t("admin.intro")}</p>
 
       {content}
+
+      {status !== "denied" && <ReportQueue />}
 
       <h3>{t("admin.trendingDomains")}</h3>
       {domains.length === 0 ? (
