@@ -245,6 +245,17 @@
   "score": "Risk score",
   "flagsTitle": "Red Flags Found",
   "noFlags": "No red flags found.",
+  "pdfUpload": {
+    "button": "Upload PDF letter",
+    "hint": "Offer letter as a PDF? It is read on your phone and never uploaded.",
+    "reading": "Reading PDF...",
+    "scanned": "Scanned letter, reading the pages...",
+    "tooBig": "PDF must be under 10 MB.",
+    "notPdf": "Please choose a PDF file.",
+    "noText": "No text found in this PDF. Try a screenshot of the letter instead.",
+    "locked": "This PDF is password-protected. Take a screenshot of the letter instead.",
+    "failed": "Could not read this PDF. Try a screenshot or paste the text."
+  },
   "flags": {
     "upfront_fee": "Upfront payment requested",
     "guaranteed_outcome": "Guaranteed visa/job/scholarship claim",
@@ -253,7 +264,11 @@
     "chat_app_only": "Contact only through WhatsApp or Telegram",
     "sensitive_info_request": "Asks for passport/ID/PIN up front",
     "blacklisted_entity": "Names a company or contact known for scams",
-    "flagged_entity": "Names a company or contact reported as suspicious"
+    "flagged_entity": "Names a company or contact reported as suspicious",
+    "suspicious_link": "Suspicious link (short link, unusual website ending or fake government address)",
+    "impersonates_official_site": "Website or email copies the name of an official organisation",
+    "hidden_redirect": "Short link leads to a suspicious website",
+    "new_domain": "Website was created only recently"
   },
   "nextSteps": "What to do next",
   "actions": {

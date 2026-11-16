@@ -14,9 +14,10 @@ from flask import Blueprint, jsonify, request
 
 from . import db
 from .auth import attach_check, current_user_id
+from .domains import online_flags
 from .lookup import MAX_TEXT_LENGTH, apply_entity_flags, text_from  # noqa: F401
 from .privacy import redact
-from .rules import evaluate
+from .rules import add_flag, evaluate
 
 log = logging.getLogger(__name__)
 
@@ -72,6 +73,11 @@ def _evaluate(text, context):
         result = apply_entity_flags(result, text)
     except Exception:
         log.exception("Contact lookup failed; using rule score only")
+    try:  # redirects and domain age (internet, time-limited); web and WhatsApp only
+        for flag_id, weight in online_flags(text):
+            result = add_flag(result, flag_id, weight)
+    except Exception:
+        log.exception("Online link checks failed; using rule score only")
     return result
 
 

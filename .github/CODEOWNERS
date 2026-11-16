@@ -8,9 +8,9 @@
 /frontend/ @k-kuol
 /backend/app/lookup.py @abay-tessema
 /backend/app/auth.py @abay-tessema
-/backend/app/emails.py @abay-tessema
-/backend/app/domains.py @abay-tessema
-/backend/app/files.py @abay-tessema
+/backend/app/emails.py @kiradukund
+/backend/app/domains.py @kiradukund
+/backend/app/files.py @kiradukund
 /backend/app/links.py @Chol-Mach-Kuol
 /backend/app/reports.py @Chol-Mach-Kuol
 /backend/app/assess.py @apiel-max
@@ -42,3 +42,5 @@
 /frontend/src/pages/Admin.css @didier-abizera
 /frontend/src/pages/Assess.css @apiel-max
 /frontend/src/i18n/rw.json @apiel-max
+/frontend/src/components/PdfUpload.jsx @kiradukund
+/backend/tests/test_domains.py @kiradukund
