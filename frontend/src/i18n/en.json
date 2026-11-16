@@ -25,7 +25,21 @@
     },
     "step": "Step"
   },
-  "trends": {},
+  "trends": {
+    "title": "Trending scams",
+    "intro": "The scam signs Genzura sees most often in offers people check. Knowing them helps you spot a fake offer first.",
+    "period": "Time period",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "basedOn": "Based on {n} checks",
+    "notEnough": "Not enough data yet. Trends appear once at least 20 offers have been checked.",
+    "flagsTitle": "Most common red flags",
+    "typesTitle": "Most checked offer types",
+    "noneYet": "Nothing has been seen often enough to show yet.",
+    "loading": "Loading trends...",
+    "error": "Could not load trends. Try again later.",
+    "privacy": "Counts only. No messages or personal details are shown."
+  },
   "assess": {
     "title": "Answer a few questions",
     "intro": "No message to paste? Answer 6 quick questions about the offer and Genzura will show how risky it is.",

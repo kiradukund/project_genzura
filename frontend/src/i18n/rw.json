@@ -25,7 +25,21 @@
     },
     "step": "Intambwe"
   },
-  "trends": {},
+  "trends": {
+    "title": "Uburiganya bugezweho",
+    "intro": "Ibimenyetso by'uburiganya Genzura ibona kenshi mu matangazo abantu basuzuma. Kubimenya bigufasha kumenya itangazo ry'ibinyoma mbere.",
+    "period": "Igihe",
+    "last7": "Iminsi 7 ishize",
+    "last30": "Iminsi 30 ishize",
+    "basedOn": "Bishingiye ku masuzuma {n}",
+    "notEnough": "Nta makuru ahagije arahari. Ibigezweho bizagaragara amatangazo nibura 20 amaze gusuzumwa.",
+    "flagsTitle": "Ibimenyetso by'uburiganya bikunze kugaragara",
+    "typesTitle": "Amatangazo akunze gusuzumwa",
+    "noneYet": "Nta kintu kiragaragara kenshi bihagije ngo cyerekanwe.",
+    "loading": "Birimo gufunguka...",
+    "error": "Ntibyashobotse kubona ibigezweho. Uzongere ugerageze nyuma.",
+    "privacy": "Ni imibare gusa. Nta butumwa cyangwa amakuru bwite agaragazwa."
+  },
   "assess": {
     "title": "Subiza ibibazo bike",
     "intro": "Nta butumwa ufite bwo gushyiramo? Subiza ibibazo 6 byihuse ku itangazo, Genzura ikwereke urugero rw'ibyago.",
