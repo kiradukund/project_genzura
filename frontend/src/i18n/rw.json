@@ -1,5 +1,30 @@
 {
-  "alreadyPaid": {},
+  "alreadyPaid": {
+    "title": "Waramaze kwishyura?",
+    "intro": "Ihute. Uko utanga raporo kare, ni ko amahirwe yo guhagarika amafaranga yiyongera. Izi ntambwe zivuye mu nzego zemewe.",
+    "source": "Inkomoko",
+    "callRib": "Hamagara RIB kuri 166",
+    "numberOnSite": "Hamagara serivisi y'abakiliya. Koresha nimero iri ku rubuga rwabo rwemewe.",
+    "steps": {
+      "stop": {
+        "title": "Hagarika kwishyura",
+        "body": "Ntukohereze andi mafaranga, kabone n'iyo bakwizeza kuyagusubiza, bakagutera ubwoba cyangwa bakagusaba amafaranga ya nyuma."
+      },
+      "evidence": {
+        "title": "Bika ubutumwa bwose n'inyemezabwishyu",
+        "body": "Ntusibe ikiganiro. Bika amafoto y'ubutumwa, nimero za telefoni, amazina, inyemezabwishyu na nimero y'ihererekanya (transaction ID) ya buri bwishyu."
+      },
+      "rib": {
+        "title": "Tanga raporo kuri RIB kuri 166",
+        "body": "Hamagara Urwego rw'Igihugu rw'Ubugenzacyaha ku buntu kuri 166 ubabwire ibyabaye. Zana ibimenyetso byawe."
+      },
+      "provider": {
+        "title": "Vugana vuba na sosiyete ya Mobile Money ukoresha",
+        "body": "Hamagara sosiyete ukoresha ako kanya, ufite nimero y'ihererekanya. Basabe guhagarika cyangwa gusubiza ubwo bwishyu."
+      }
+    },
+    "step": "Intambwe"
+  },
   "trends": {},
   "assess": {
     "title": "Subiza ibibazo bike",
@@ -61,10 +86,55 @@
   },
   "auth": {},
   "myChecks": {},
-  "admin": {},
-  "report": {},
-  "alerts": {},
-  "agencies": {},
+  "admin": {
+    "title": "Ikibaho cy'amakuru y'ubugenzuzi",
+    "intro": "Imibare ya none ivuye mu masuzuma yabitswe na Genzura.",
+    "totalChecks": "Amasuzuma yose",
+    "highRisk": "Ibyago byinshi",
+    "suspicious": "Bikemangwa",
+    "loading": "Imibare iri gufunguka...",
+    "error": "Ntibyashobotse gufungura imibare.",
+    "signInRequired": "Injira ukoresheje konti y'umuyobozi kugira ngo ubone ikibaho.",
+    "checksPerDay": "Amasuzuma ku munsi (iminsi 30 ishize)",
+    "scamTypes": "Ubwoko bw'uburiganya",
+    "topFlags": "Ibimenyetso bikunze kugaragara",
+    "trendingDomains": "Imbuga zikunze kugaragara",
+    "noData": "Nta makuru arahari.",
+    "downloadCsv": "Kuramo CSV"
+  },
+  "report": {
+    "placeholder": "Shyira hano ubutumwa ukeka",
+    "contactPlaceholder": "Telefoni cyangwa imeli yawe (si ngombwa)",
+    "submit": "Tanga raporo y'ubu buriganya",
+    "submitting": "Birimo koherezwa...",
+    "done": "Urakoze. Raporo yawe yoherejwe.",
+    "error": "Hari ikitagenze neza. Ongera ugerageze."
+  },
+  "alerts": {
+    "title": "Akira amakuru y'uburiganya kuri SMS",
+    "intro": "Rimwe mu cyumweru tukoherereza SMS ku kimenyetso cy'uburiganya tubona cyane, kugira ngo ukimenye mbere. Ni ubuntu. Subiza STOP igihe icyo ari cyo cyose ngo uhagarike.",
+    "label": "Nimero ya telefoni yawe",
+    "submit": "Iyandikishe",
+    "sending": "Birimo kwiyandikisha...",
+    "consent": "Nemeye ko Genzura ibika iyi nimero gusa kugira ngo inyoherereze amakuru y'uburiganya.",
+    "done": "Byakozwe. Uri bwakire SMS ikwakira. Subiza STOP ngo uhagarike.",
+    "invalid": "Andika nimero ya telefoni yo mu Rwanda yemewe.",
+    "failed": "Ntibyashobotse kwiyandikisha ubu. Uzongere ugerageze nyuma."
+  },
+  "agencies": {
+    "title": "Iki kigo gifite uruhushya?",
+    "warning": "U Rwanda ntiruratanga uruhushya ku kigo na kimwe cyo gushakira abantu akazi mu mahanga. Niba hari ukubwiye ko ari ikigo gifite uruhushya cy'akazi ko hanze, bifate nk'ikimenyetso cy'uburiganya.",
+    "searchLabel": "Izina ry'ikigo",
+    "placeholder": "urugero: Gulf Jobs Ltd",
+    "check": "Suzuma",
+    "licensed": "Iki kigo kiri ku rutonde rwemewe.",
+    "notLicensed": "ntikiri ku rutonde urwo ari rwo rwose rwemewe. Nta kigo kirahabwa uruhushya rw'akazi ko hanze.",
+    "verifyTitle": "Genzura ukoresheje aho kuvugana hemewe",
+    "asOf": "Amakuru yagenzuwe ku wa",
+    "loading": "Birimo gufunguka...",
+    "error": "Ntibyashobotse kubona amakuru y'ibigo."
+  },
+  "appName": "Genzura",
   "title": "Suzuma mbere yo kwishyura",
   "subtitle": "Genzura amatangazo y'akazi, buruse na viza byo hanze y'igihugu wirinde uburiganya",
   "language": "Ururimi",
@@ -74,7 +144,11 @@
     "how": "Uko bikora",
     "check": "Suzuma itangazo",
     "signs": "Ibimenyetso",
-    "report": "Tanga raporo"
+    "report": "Tanga raporo",
+    "directory": "Aho kuvugana hemewe",
+    "alreadyPaid": "Waramaze kwishyura?",
+    "home": "Subira ahabanza",
+    "notFound": "Iyi paji ntibonetse"
   },
   "home": {
     "cta": "Suzuma itangazo nonaha",
@@ -98,7 +172,25 @@
     "signsTitle": "Ibyo Genzura ireba",
     "signsIntro": "Ibimenyetso bikunze kugaragara mu matangazo y'ibinyoma yo hanze. Uko itangazo rifite ibimenyetso byinshi, ni ko ibyago byiyongera.",
     "ribTitle": "Waba waramaze kwishyura, cyangwa uri guhatirwa kwishyura?",
-    "ribBody": "Hagarika kohereza amafaranga, maze utange raporo ku Rwego rw'Igihugu rw'Ubugenzacyaha (RIB)."
+    "ribBody": "Hagarika kohereza amafaranga, maze utange raporo ku Rwego rw'Igihugu rw'Ubugenzacyaha (RIB).",
+    "directoryCta": "Reba aho kuvugana hemewe uko ari {n}",
+    "promiseTitle": "Isezerano ryacu",
+    "promise": "Suzuma itangazo ry'akazi, buruse cyangwa viza byo hanze mbere yo kwishyura. Nta konti ikenewe, kandi amakuru bwite akurwamo mbere y'uko hagira ikibikwa.",
+    "demo": {
+      "label": "Urugero: itangazo rya viza y'ibinyoma kuri WhatsApp. Genzura igaragaza ibimenyetso bine by'uburiganya ikaryita IBYAGO BYINSHI.",
+      "sender": "Umukozi wa viza",
+      "status": "WhatsApp · +250 78X XXX XXX",
+      "p1": "Turakwishimiye! Viza yawe y'akazi muri Canada ",
+      "f1": "yemejwe 100%",
+      "p2": ". Kugira ngo ugumane umwanya wawe, ",
+      "f2": "ishyura amafaranga 150,000 RWF y'ibyangombwa",
+      "p3": " kuri MTN MoMo ",
+      "f3": "mbere ya saa kumi n'ebyiri z'umugoroba uyu munsi",
+      "p4": ". Ntuhamagare ibiro, ",
+      "f4": "umvugishe kuri WhatsApp gusa",
+      "p5": "."
+    },
+    "signLabel": "Ikimenyetso cy'uburiganya"
   },
   "offerType": {
     "label": "Ni irihe tangazo wakiriye?",
@@ -148,10 +240,10 @@
   "nextSteps": "Icyo wakora ubu",
   "actions": {
     "reportRib": "Tanga raporo kuri RIB (166)",
+    "close": "Funga",
     "findAmbassador": "Shaka Umuhuzabikorwa w'Ikoranabuhanga",
     "ambassadorTitle": "Abahuzabikorwa b'Ikoranabuhanga",
-    "ambassadorEmpty": "Urutonde rw'abahuzabikorwa ruzaboneka vuba. Hagati aho, hamagara RIB kuri 166 bagufashe.",
-    "close": "Funga"
+    "ambassadorEmpty": "Urutonde rw'abahuzabikorwa ruzaboneka vuba. Hagati aho, hamagara RIB kuri 166 bagufashe."
   },
   "sms": {
     "label": "Ohereza igisubizo kuri telefoni yanjye",
@@ -166,7 +258,12 @@
     "label": "Gerageza urugero:",
     "job": "Uburiganya bw'akazi",
     "scholarship": "Uburiganya bwa buruse",
-    "visa": "Uburiganya bwa viza"
+    "visa": "Uburiganya bwa viza",
+    "text": {
+      "job": "BYIHUTIRWA! Akazi ko muri hoteli i Dubai, umushahara wa 2,000,000 RWF ku kwezi. Nta kizamini cy'akazi gikenewe, viza yemejwe 100%. Ishyura amafaranga yo kwiyandikisha 150,000 RWF kuri MTN MoMo mbere yo ku wa Gatanu kugira ngo ubone umwanya. Vugana na hr.dubaijobs@gmail.com cyangwa kuri WhatsApp gusa: +250 78X XXX XXX.",
+      "scholarship": "Turakwishimiye! Watoranyijwe kubona buruse yishyuriwe byose muri Canada. Kugira ngo ubone umwanya wawe, ohereza kopi ya pasiporo yawe kandi wishyure amafaranga y'ibyangombwa 120,000 RWF kuri MTN MoMo bitarenze amasaha 24. Vugana n'umukozi wacu kuri WhatsApp: +250 78X XXX XXX. Imyanya ni mike.",
+      "visa": "Bona viza y'akazi mu Bwongereza mu minsi 7, wizeye ko uzabona viza 100%! Nta kizamini cya IELTS gikenewe. Tanga pasiporo yawe na konti ya banki ku mukozi wacu i Kigali, wishyure amafaranga 300,000 RWF ya viza kuri MTN MoMo uyu munsi gusa. Ihute, ni amahirwe ya nyuma."
+    }
   },
   "share": {
     "whatsapp": "Sangiza kuri WhatsApp",
