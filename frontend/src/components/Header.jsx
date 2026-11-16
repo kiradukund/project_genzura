@@ -1,20 +1,32 @@
+// OWNER: Kuol - Top bar and menu
 import { useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { useI18n } from "../i18n";
+import { Link, useLocation } from "../router";
 import LanguageMenu from "./LanguageMenu";
 
-// Menu links jump to sections of the home page. When the site gets real pages
-// (Directory, etc.), add them here.
+// Links to sections of the home page. They work from any page.
 const NAV = [
   { id: "how", key: "nav.how" },
-  { id: "check", key: "nav.check" },
+  // On wide screens "Check an offer" is the red button on the right instead.
+  { id: "check", key: "nav.check", mobileOnly: true },
   { id: "signs", key: "nav.signs" },
-  { id: "report", key: "nav.report" },
-  { id: "directory", key: "nav.directory" },
+  { id: "already-paid", key: "nav.alreadyPaid" },
+];
+
+// Links to separate pages. Add one when its route is turned on in App.jsx,
+// and add its label to the "nav" block in en.json.
+const PAGE_LINKS = [
+  { to: "/directory", key: "nav.directory" },
+  // { to: "/assess", key: "nav.assess" },
+  // { to: "/trends", key: "nav.trends" },
+  // { to: "/agencies", key: "nav.agencies" },
+  // { to: "/my-checks", key: "nav.myChecks" },
+  // { to: "/signin", key: "nav.signIn" },
 ];
 
 // Highlight the menu link for the section currently on screen.
-function useActiveSection(ids) {
+function useActiveSection(ids, path) {
   const [active, setActive] = useState("");
 
   useEffect(() => {
@@ -32,7 +44,7 @@ function useActiveSection(ids) {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, [ids]);
+  }, [ids, path]);
 
   return active;
 }
@@ -43,7 +55,9 @@ const NAV_IDS = NAV.map((item) => item.id);
 export default function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const active = useActiveSection(NAV_IDS);
+  const { path } = useLocation();
+  const onHome = path === "/";
+  const active = useActiveSection(NAV_IDS, path);
   const [scrolled, setScrolled] = useState(false);
 
   // Add a shadow to the bar once the page is scrolled.
@@ -65,22 +79,37 @@ export default function Header() {
   return (
     <header className={`topbar ${scrolled ? "scrolled" : ""}`}>
       <div className="topbar-inner">
-        <a className="brand" href="#top" onClick={() => setOpen(false)}>
-          <img className="logo" src={logo} alt={t("appName")} width="240" height="188" />
-        </a>
+        <Link className="brand" to="/#top" onClick={() => setOpen(false)}>
+          <img className="logo" src={logo} alt={t("appName")} width="457" height="362" />
+        </Link>
 
         <nav id="site-nav" className={`nav ${open ? "open" : ""}`} aria-label={t("nav.label")}>
           <ul>
-            {NAV.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  className={active === item.id ? "active" : ""}
-                  aria-current={active === item.id ? "location" : undefined}
+            {NAV.map((item) => {
+              const isActive = onHome && active === item.id;
+              return (
+                <li key={item.id} className={item.mobileOnly ? "mobile-only" : undefined}>
+                  <Link
+                    to={`/#${item.id}`}
+                    className={isActive ? "active" : ""}
+                    aria-current={isActive ? "location" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    {t(item.key)}
+                  </Link>
+                </li>
+              );
+            })}
+            {PAGE_LINKS.map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className={path === item.to ? "active" : ""}
+                  aria-current={path === item.to ? "page" : undefined}
                   onClick={() => setOpen(false)}
                 >
                   {t(item.key)}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -105,6 +134,10 @@ export default function Header() {
             </svg>
           </button>
         </div>
+
+        <Link className="topbar-cta" to="/#check" onClick={() => setOpen(false)}>
+          {t("nav.check")}
+        </Link>
       </div>
     </header>
   );

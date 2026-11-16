@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useI18n } from "../i18n";
 import ActionButtons from "./ActionButtons";
+import AlreadyPaid from "./AlreadyPaid";
 import SendToPhone from "./SendToPhone";
 import ShareResult from "./ShareResult";
 
@@ -61,6 +62,7 @@ export default function RiskResult({ result }) {
 
       <h2>{t("nextSteps")}</h2>
       <ActionButtons />
+      {verdict !== "low_risk" && <AlreadyPaid compact />}
       <ShareResult verdict={verdict} flagLabels={flags.map(flagLabel)} />
       {SMS_ENABLED && <SendToPhone checkId={result.check_id} />}
     </section>

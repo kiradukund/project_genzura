@@ -1,7 +1,7 @@
 // Empty in dev: Vite proxies /api to the Flask server. Set VITE_API_URL in production.
 const API = import.meta.env.VITE_API_URL || "";
 
-async function post(path, payload) {
+export async function post(path, payload) {
   const res = await fetch(`${API}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

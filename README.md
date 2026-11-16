@@ -21,10 +21,11 @@ The free API sleeps when idle, so the first request can take about a minute.
 | Official Verification Directory (20 institutions) | Done |
 | USSD / SMS message texts (EN + RW, feature-phone safe) | Done |
 | Live deployment (Render + Neon PostgreSQL), auto-deploy on every merge into dev | Done |
+| Partner API (`POST /v1/check`): API keys, daily limits | Done |
 | Link checker, entity lookup, report + moderation, guided assessment, "Already paid?" guide | In progress |
 | Admin login + dashboard, trending scams, user accounts | In progress |
 | USSD, SMS, WhatsApp bot, scam alerts (Africa's Talking / WhatsApp) | Next |
-| Licensed-agency registry, email classification, file checks, partner API | Planned |
+| Licensed-agency registry, email classification, file checks | Planned |
 
 ## Team
 
@@ -102,7 +103,7 @@ With the venv active, from `backend/`:
 
     pytest
 
-99 tests: rule engine, PII redaction, `/api/check`, USSD/SMS message limits.
+114 tests: rule engine, PII redaction, `/api/check`, Partner API, USSD/SMS message limits.
 
 ## Run the frontend
 
@@ -134,6 +135,37 @@ Response `200`:
 Response `400`: `{ "error": "text is required" }` (also for an invalid `context` or `language`).
 
 How a check works: the rules run on the raw text, then the text is masked (`[EMAIL]`, `[PHONE]`, `[NAME]`), and only the masked copy is stored.
+
+### Partner API
+
+`POST /v1/check` lets partner organizations (job boards, NGOs, scholarship offices) check messages from their own systems.
+It needs an API key in the `X-API-Key` header.
+
+    curl -X POST https://genzura-api-f40h.onrender.com/v1/check \
+      -H "Content-Type: application/json" \
+      -H "X-API-Key: YOUR_KEY" \
+      -d '{"text": "Guaranteed visa, pay the processing fee now", "context": "visa"}'
+
+Request body: same as `/api/check`. `text` must be at most 2000 characters.
+
+Response `200`: same as `/api/check`, plus `requests_remaining_today`.
+
+    { "risk_score": 60, "verdict": "high_risk", "flags": ["upfront_fee", "guaranteed_outcome"], "check_id": 2, "requests_remaining_today": 999 }
+
+| Status | Meaning |
+|---|---|
+| `400` | Invalid input (missing or non-text `text`, too long, bad `context` or `language`) |
+| `401` | Missing or invalid API key |
+| `429` | Daily limit reached (default 1000 requests per key, resets each day) |
+| `503` | Database unavailable; the key cannot be verified, so the request is refused |
+
+Partner checks are saved with `channel = 'api'`.
+
+Managing keys (Project Manager only):
+
+- Create: from `backend/`, with `DATABASE_URL` set, run `python create_api_key.py "Partner name"` (optional daily limit: `python create_api_key.py "Partner name" 500`).
+  The key is printed once. Only its SHA-256 hash is stored, so a lost key cannot be recovered, only replaced.
+- Disable: `UPDATE api_keys SET active = false WHERE id = <id>;`
 
 ## Git workflow
 
