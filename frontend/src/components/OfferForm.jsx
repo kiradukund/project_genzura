@@ -1,4 +1,5 @@
 import { useI18n } from "../i18n";
+import PdfUpload from "./PdfUpload";
 import ScreenshotUpload from "./ScreenshotUpload";
 
 export const MAX_CHARS = 2000;
@@ -34,6 +35,7 @@ export default function OfferForm({ text, onTextChange, onSubmit, loading, error
       </div>
 
       <ScreenshotUpload onText={appendOcrText} disabled={loading} />
+      <PdfUpload onText={appendOcrText} disabled={loading} />
 
       <button type="submit" className="btn-primary" disabled={!text.trim() || loading}>
         {loading ? t("form.checking") : t("form.check")}

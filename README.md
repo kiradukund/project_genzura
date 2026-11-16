@@ -26,7 +26,10 @@ The free API sleeps when idle, so the first request can take about a minute.
 | WhatsApp bot (webhook, signature check) | Built, needs a WhatsApp Business number to go live |
 | USSD, SMS results, scam alerts | In progress |
 | Trending scams page | In progress |
-| Email classification, domain checks, file checks | Cut (out of scope) |
+| Link checks: short links, spam endings, fake government and look-alike sites (`irembo-gov.com`) | Done |
+| Domain trust: follows short links, flags websites registered in the last 90 days | Done (web and WhatsApp checks) |
+| PDF offer letters read in the browser (text and scanned), file never uploaded | Done |
+| Email classification (disposable addresses, external APIs), QR codes | Cut (out of scope) |
 
 ## Team
 
@@ -248,6 +251,7 @@ Environment variables on Render (`genzura-api`):
 | `COOKIE_SAMESITE` | `None`, so the login cookie works between the site and the API |
 | `FRONTEND_ORIGINS` | Optional: sites allowed to send login cookies (default: localhost + genzura-web) |
 | `AT_USERNAME`, `AT_API_KEY` | Africa's Talking (`sandbox` for now): SMS codes, USSD |
+| `DOMAIN_CHECKS_ONLINE` | Optional: `false` turns off the online link checks (redirects, domain age) |
 | `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN` | WhatsApp bot (not set yet, so the bot is off) |
 
 `genzura-web` needs `VITE_API_URL` (the API address, set at build time).
