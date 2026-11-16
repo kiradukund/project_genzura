@@ -66,6 +66,17 @@ export default function Agencies() {
               </li>
             ))}
           </ul>
+          <h2>{t("agencies.sourcesTitle")}</h2>
+          <ul>
+            {(info.sources || []).map((src) => (
+              <li key={src.url}>
+                <a href={src.url} target="_blank" rel="noopener noreferrer">
+                  {src.title}
+                </a>{" "}
+                ({src.publisher}, {src.date})
+              </li>
+            ))}
+          </ul>
           <p><small>{t("agencies.asOf")} {info.as_of}</small></p>
         </>
       )}
