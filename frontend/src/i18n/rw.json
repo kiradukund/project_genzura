@@ -100,7 +100,20 @@
     "topFlags": "Ibimenyetso bikunze kugaragara",
     "trendingDomains": "Imbuga zikunze kugaragara",
     "noData": "Nta makuru arahari.",
-    "downloadCsv": "Kuramo CSV"
+    "downloadCsv": "Kuramo CSV",
+    "reportsTitle": "Raporo z'uburiganya zo gusuzuma",
+    "tab_pending": "Bitegereje",
+    "tab_approved": "Byemejwe",
+    "tab_rejected": "Byanzwe",
+    "colMessage": "Ubutumwa (amakuru bwite yahishwe)",
+    "colContact": "Aho kuvugana",
+    "colReceived": "Byakiriwe",
+    "colAction": "Igikorwa",
+    "notePlaceholder": "Icyitonderwa (si ngombwa)",
+    "approve": "Emeza",
+    "reject": "Anga",
+    "noReports": "Nta raporo ziri hano.",
+    "reportsError": "Ntibyashobotse gufungura raporo."
   },
   "report": {
     "placeholder": "Shyira hano ubutumwa ukeka",
@@ -130,6 +143,7 @@
     "licensed": "Iki kigo kiri ku rutonde rwemewe.",
     "notLicensed": "ntikiri ku rutonde urwo ari rwo rwose rwemewe. Nta kigo kirahabwa uruhushya rw'akazi ko hanze.",
     "verifyTitle": "Genzura ukoresheje aho kuvugana hemewe",
+    "sourcesTitle": "Inkomoko",
     "asOf": "Amakuru yagenzuwe ku wa",
     "loading": "Birimo gufunguka...",
     "error": "Ntibyashobotse kubona amakuru y'ibigo."
