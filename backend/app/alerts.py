@@ -8,7 +8,11 @@ POST /api/alerts/send-weekly   header X-Cron-Token     -> {"sent": n, "failed": 
     Needs ALERTS_CRON_TOKEN in backend/.env; without it the endpoint is off.
 
 People can also reply STOP to any alert (handled in sms.py).
-Table: alert_subscribers (db/migrations/006_alerts.sql).
+Table: alert_subscribers (db/migrations/006_alerts.sql, 009_alerts_delete.sql).
+
+Unsubscribing (form or STOP) deletes the row, so the phone number is gone.
+Rwanda's data protection law gives people the right to have their data
+erased (see docs/data-protection.md).
 """
 import hmac
 import logging
@@ -50,7 +54,7 @@ def save_subscriber(phone, language):
                 """
                 INSERT INTO alert_subscribers (phone, language) VALUES (%s, %s)
                 ON CONFLICT (phone) DO UPDATE
-                SET language = EXCLUDED.language, active = TRUE, unsubscribed_at = NULL
+                SET language = EXCLUDED.language, active = TRUE
                 """,
                 (phone, language),
             )
@@ -60,20 +64,15 @@ def save_subscriber(phone, language):
 
 
 def unsubscribe(phone):
-    """Turn alerts off for this number. Returns True if it was subscribed."""
+    """Stop alerts and delete the number. Returns True if it was subscribed."""
     phone = normalize_phone(phone)
     if phone is None:
         return False
     conn = _get_conn()
     try:
         with conn.cursor() as cur:
-            cur.execute(
-                """
-                UPDATE alert_subscribers SET active = FALSE, unsubscribed_at = NOW()
-                WHERE phone = %s AND active
-                """,
-                (phone,),
-            )
+            # Delete, not deactivate: we keep no number after someone says STOP.
+            cur.execute("DELETE FROM alert_subscribers WHERE phone = %s", (phone,))
             changed = cur.rowcount > 0
         conn.commit()
     finally:

@@ -10,7 +10,7 @@ TOKEN = "cron-secret"
 @pytest.fixture
 def state():
     return {
-        "subscribers": {},  # phone -> {"language", "active"}
+        "subscribers": {},  # phone -> {"language"}; unsubscribing deletes the entry
         "sent": [],
         "marked": [],
         "summary": {"count": 12, "top_flag": "upfront_fee"},
@@ -24,19 +24,14 @@ def client(monkeypatch, state):
     monkeypatch.setenv("ALERTS_CRON_TOKEN", TOKEN)
 
     def save_subscriber(phone, language):
-        state["subscribers"][phone] = {"language": language, "active": True}
+        state["subscribers"][phone] = {"language": language}
 
     def unsubscribe(phone):
-        phone = sms.normalize_phone(phone)
-        sub = state["subscribers"].get(phone)
-        if sub and sub["active"]:
-            sub["active"] = False
-            return True
-        return False
+        return state["subscribers"].pop(sms.normalize_phone(phone), None) is not None
 
     def active_subscribers():
         return [{"id": i, "phone": p, "language": s["language"]}
-                for i, (p, s) in enumerate(state["subscribers"].items(), 1) if s["active"]]
+                for i, (p, s) in enumerate(state["subscribers"].items(), 1)]
 
     monkeypatch.setattr(alerts, "save_subscriber", save_subscriber)
     monkeypatch.setattr(alerts, "unsubscribe", unsubscribe)
@@ -56,7 +51,7 @@ def test_subscribe_saves_number_and_sends_welcome(client, state):
     res = client.post("/api/alerts/subscribe", json={"phone": "0788 123 456", "language": "rw"})
     assert res.status_code == 200
     assert res.get_json() == {"subscribed": True}
-    assert state["subscribers"] == {"+250788123456": {"language": "rw", "active": True}}
+    assert state["subscribers"] == {"+250788123456": {"language": "rw"}}
     assert state["sent"] == [("+250788123456", alerts.ALERT_TEXT["rw"]["welcome"])]
 
 
@@ -102,11 +97,61 @@ def test_unsubscribe_gives_same_answer_for_unknown_number(client, state):
         res = client.post("/api/alerts/unsubscribe", json={"phone": phone})
         assert res.status_code == 200
         assert res.get_json() == {"unsubscribed": True}
-    assert state["subscribers"]["+250788123456"]["active"] is False
+    # The number is gone, not just switched off.
+    assert "+250788123456" not in state["subscribers"]
 
 
 def test_unsubscribe_rejects_bad_number(client):
     assert client.post("/api/alerts/unsubscribe", json={"phone": "abc"}).status_code == 400
+
+
+# ---- the real unsubscribe() talks to the database like this ------------------
+
+class FakeCursor:
+    def __init__(self, log, rowcount):
+        self.log, self.rowcount = log, rowcount
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def execute(self, sql, params=None):
+        self.log.append((" ".join(sql.split()), params))
+
+
+class FakeConn:
+    def __init__(self, rowcount=1):
+        self.log, self.rowcount, self.committed, self.closed = [], rowcount, False, False
+
+    def cursor(self):
+        return FakeCursor(self.log, self.rowcount)
+
+    def commit(self):
+        self.committed = True
+
+    def close(self):
+        self.closed = True
+
+
+def test_unsubscribe_deletes_the_row(monkeypatch):
+    conn = FakeConn(rowcount=1)
+    monkeypatch.setattr(alerts, "_get_conn", lambda: conn)
+    assert alerts.unsubscribe("0788 123 456") is True
+    assert conn.log == [("DELETE FROM alert_subscribers WHERE phone = %s", ("+250788123456",))]
+    assert conn.committed and conn.closed
+
+
+def test_unsubscribe_unknown_number_returns_false(monkeypatch):
+    conn = FakeConn(rowcount=0)
+    monkeypatch.setattr(alerts, "_get_conn", lambda: conn)
+    assert alerts.unsubscribe("0722000000") is False
+
+
+def test_unsubscribe_bad_number_skips_database(monkeypatch):
+    monkeypatch.setattr(alerts, "_get_conn", lambda: pytest.fail("should not connect"))
+    assert alerts.unsubscribe("abc") is False
 
 
 # ---- weekly send ------------------------------------------------------------
