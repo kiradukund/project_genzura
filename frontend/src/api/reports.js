@@ -12,7 +12,9 @@ export async function submitReport({ text, contact, check_id }) {
 }
 
 export async function fetchReports(status = "pending") {
-  const res = await fetch(`${BASE}/api/admin/reports?status=${status}`);
+  const res = await fetch(`${BASE}/api/admin/reports?status=${status}`, {
+    credentials: "include",
+  });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
@@ -21,6 +23,7 @@ export async function approveReport(id, note = "") {
   const res = await fetch(`${BASE}/api/admin/reports/${id}/approve`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ note }),
   });
   if (!res.ok) throw new Error(await res.text());
@@ -31,6 +34,7 @@ export async function rejectReport(id, note = "") {
   const res = await fetch(`${BASE}/api/admin/reports/${id}/reject`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ note }),
   });
   if (!res.ok) throw new Error(await res.text());
