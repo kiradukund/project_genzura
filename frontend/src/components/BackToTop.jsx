@@ -14,7 +14,14 @@ export default function BackToTop() {
   }, []);
 
   return (
-    <a href="#top" className={`to-top ${visible ? "show" : ""}`} aria-label={t("footer.top")} tabIndex={visible ? 0 : -1}>
+    <a
+      href="#top"
+      onClick={(e) => {
+        // Works on every page, even ones without an element called "top".
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }}
+      className={`to-top ${visible ? "show" : ""}`} aria-label={t("footer.top")} tabIndex={visible ? 0 : -1}>
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>

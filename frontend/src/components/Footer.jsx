@@ -1,11 +1,15 @@
 import logo from "../assets/logo.png";
 import { useI18n } from "../i18n";
+import { Link } from "../router";
 
+// Same order as the home page and the top menu.
 const LINKS = [
-  { href: "#how", key: "nav.how" },
-  { href: "#check", key: "nav.check" },
-  { href: "#signs", key: "nav.signs" },
-  { href: "#faq", key: "footer.faq" },
+  { href: "/#how", key: "nav.how" },
+  { href: "/#check", key: "nav.check" },
+  { href: "/#signs", key: "nav.signs" },
+  { href: "/#already-paid", key: "nav.alreadyPaid" },
+  { href: "/directory", key: "nav.directory" },
+  { href: "/#faq", key: "footer.faq" },
 ];
 
 export default function Footer() {
@@ -16,7 +20,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <img className="footer-logo" src={logo} alt={t("appName")} width="240" height="188" loading="lazy" />
+          <img className="footer-logo" src={logo} alt={t("appName")} width="457" height="362" loading="lazy" />
           <p>{t("footer.tagline")}</p>
         </div>
 
@@ -25,7 +29,7 @@ export default function Footer() {
           <ul>
             {LINKS.map((l) => (
               <li key={l.href}>
-                <a href={l.href}>{t(l.key)}</a>
+                <Link to={l.href}>{t(l.key)}</Link>
               </li>
             ))}
           </ul>

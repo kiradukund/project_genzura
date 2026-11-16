@@ -1,14 +1,9 @@
-import { useState } from "react";
 import { useI18n } from "../i18n";
 
-// No ambassador data source yet: the schema has no ambassador table and Kevin
-// must confirm the data source and privacy rules first. Fill this list (or swap
-// it for an API call) once that is decided. Shape: { name, area, phone }.
-const AMBASSADORS = [];
-
+// Call RIB on 166. The "Find a Digital Ambassador" button was removed until
+// there is a real ambassador contact list to show.
 export default function ActionButtons() {
   const { t } = useI18n();
-  const [showAmbassadors, setShowAmbassadors] = useState(false);
 
   return (
     <div className="actions">
@@ -21,35 +16,6 @@ export default function ActionButtons() {
         </svg>
         {t("actions.reportRib")}
       </a>
-      <button
-        type="button"
-        className="btn-outline"
-        aria-expanded={showAmbassadors}
-        onClick={() => setShowAmbassadors((v) => !v)}
-      >
-        {t("actions.findAmbassador")}
-      </button>
-
-      {showAmbassadors && (
-        <div className="panel">
-          <h3>{t("actions.ambassadorTitle")}</h3>
-          {AMBASSADORS.length === 0 ? (
-            <p>{t("actions.ambassadorEmpty")}</p>
-          ) : (
-            <ul className="ambassadors">
-              {AMBASSADORS.map((a) => (
-                <li key={`${a.name}-${a.area}`}>
-                  <strong>{a.name}</strong> <span>{a.area}</span>
-                  {a.phone && <a href={`tel:${a.phone}`}>{a.phone}</a>}
-                </li>
-              ))}
-            </ul>
-          )}
-          <button type="button" className="link" onClick={() => setShowAmbassadors(false)}>
-            {t("actions.close")}
-          </button>
-        </div>
-      )}
     </div>
   );
 }
