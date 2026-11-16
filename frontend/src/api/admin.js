@@ -1,4 +1,4 @@
-k// OWNER: Didier - API calls for admin
+// OWNER: Didier - API calls for admin
 // Empty in dev: Vite proxies /api to the Flask server. Set VITE_API_URL in production.
 const API = import.meta.env.VITE_API_URL || "";
 
