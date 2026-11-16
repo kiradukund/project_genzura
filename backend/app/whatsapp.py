@@ -17,6 +17,7 @@ import hmac
 import json
 import logging
 import os
+import re
 from urllib.request import Request, urlopen
 
 from flask import Blueprint, jsonify, request
@@ -32,6 +33,33 @@ whatsapp_bp = Blueprint("whatsapp", __name__)
 log = logging.getLogger(__name__)
 
 DIRECTORY_URL = "https://genzura-web.onrender.com/directory"
+
+# Common Kinyarwanda words in job/visa/scholarship offers. 2 or more -> reply in Kinyarwanda.
+RW_HINTS = {
+    "akazi", "amafaranga", "kwishyura", "wishyure", "ishyura", "umushahara",
+    "buruse", "viza", "mu", "mahanga", "uzahabwa", "wemerewe", "ohereza",
+    "kohereza", "muraho", "mwiriwe", "ndashaka", "nimero", "ubutumwa", "kandi",
+}
+SCHOLARSHIP_WORDS = {"scholarship", "scholarships", "buruse", "bourse", "university", "kaminuza"}
+VISA_WORDS = {"visa", "viza", "passport", "pasiporo"}
+JOB_WORDS = {"job", "jobs", "work", "salary", "akazi", "umushahara", "employer"}
+
+
+def _words(text):
+    return set(re.findall(r"[a-z]+", text.lower()))
+
+
+def detect_language(text):
+    return "rw" if len(_words(text) & RW_HINTS) >= 2 else "en"
+
+
+def detect_context(text):
+    words = _words(text)
+    if words & SCHOLARSHIP_WORDS:
+        return "scholarship"
+    if words & VISA_WORDS and not words & JOB_WORDS:
+        return "visa"
+    return "job"
 
 
 def _env(name, default=""):
@@ -130,9 +158,11 @@ def receive():
 
     for sender, text in incoming_texts(payload):
         text = text[:MAX_TEXT_LENGTH]
-        result = _evaluate(text, "job")
-        _save_check("whatsapp", "job", "en", text, result)
-        send_text(sender, build_reply(result))
+        language = detect_language(text)
+        context = detect_context(text)
+        result = _evaluate(text, context)
+        _save_check("whatsapp", context, language, text, result)
+        send_text(sender, build_reply(result, language))
 
     # Always 200 for valid requests, so Meta does not keep retrying.
     return jsonify({"status": "ok"}), 200
