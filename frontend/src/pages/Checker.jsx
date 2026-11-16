@@ -2,6 +2,7 @@ import { useState } from "react";
 import { checkOffer } from "../api/client";
 import OfferForm from "../components/OfferForm";
 import OfferTypeToggle, { OFFER_TYPES } from "../components/OfferTypeToggle";
+import ReportForm from "../components/ReportForm";
 import RiskResult from "../components/RiskResult";
 import { useI18n } from "../i18n";
 
@@ -48,6 +49,14 @@ export default function Checker() {
       </div>
       <OfferForm text={text} onTextChange={setText} onSubmit={submit} loading={loading} error={error} />
       {result && <RiskResult result={result} />}
+      {/* Chol's report form, linked to this check. key resets it for each new check. */}
+      {result && (
+        <section className="report-box" aria-labelledby="report-title">
+          <h2 id="report-title">{t("home.reportTitle")}</h2>
+          <p>{t("home.reportIntro")}</p>
+          <ReportForm key={result.check_id ?? "report"} checkId={result.check_id} />
+        </section>
+      )}
     </div>
   );
 }

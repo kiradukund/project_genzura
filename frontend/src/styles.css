@@ -341,7 +341,8 @@ a {
   color: var(--brand-400);
 }
 
-@media (min-width: 900px) {
+/* Full menu bar from 1100px; below that the ☰ button, since there are now 6 links */
+@media (min-width: 1100px) {
   .menu-btn,
   .nav .mobile-only {
     display: none;
@@ -371,6 +372,7 @@ a {
     min-height: 68px;
     border: 0;
     font-size: 0.8rem;
+    white-space: nowrap;
   }
 
   /* Blue line under the link for the current section or page */
@@ -397,7 +399,7 @@ a {
   }
 }
 
-@media (min-width: 900px) and (max-width: 1099px) {
+@media (min-width: 1100px) and (max-width: 1279px) {
   .nav ul {
     gap: 20px;
   }
@@ -2441,4 +2443,413 @@ input:focus {
 
 .assess .assess-answer input {
   accent-color: var(--brand-700);
+}
+
+/* ----- Admin dashboard (/admin) -----
+   Admin.css was written for the old dark theme; these rules are more
+   specific so the page reads on white. Admin.css stays as it is. */
+main .admin {
+  padding: 0;
+  color: var(--ink);
+}
+
+main .admin h2 {
+  color: var(--navy-800);
+}
+
+main .admin h3 {
+  margin: 40px 0 14px;
+  color: var(--brand-700);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+main .admin .section-intro {
+  color: var(--muted);
+}
+
+main .admin .kpi-grid {
+  gap: 0;
+  border-top: 1px solid var(--grey-200);
+  border-left: 1px solid var(--grey-200);
+  box-shadow: 0 10px 30px rgba(7, 26, 46, 0.08);
+}
+
+main .admin .kpi {
+  padding: 20px 22px;
+  border: 0;
+  border-right: 1px solid var(--grey-200);
+  border-bottom: 1px solid var(--grey-200);
+  border-radius: 0;
+  background: var(--white);
+}
+
+main .admin .kpi span {
+  color: var(--red-600);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+main .admin .kpi strong {
+  color: var(--navy-800);
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+main .admin button {
+  border: 2px solid var(--brand-600);
+  border-radius: var(--pill);
+  background: var(--brand-600);
+  color: var(--white);
+}
+
+main .admin .domains {
+  color: var(--ink);
+}
+
+main .admin .domains th {
+  color: var(--navy-800);
+}
+
+main .admin .domains th,
+main .admin .domains td {
+  border-bottom: 1px solid var(--grey-200);
+}
+
+/* ----- Agency check (/agencies) -----
+   Didier's Agencies.jsx has no CSS of its own, so it is styled here. */
+.agencies-page .section {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.agencies-page h1 {
+  margin: 0 0 16px;
+  color: var(--navy-800);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* The key message: no agency is licensed for jobs abroad */
+.agencies-page .section-intro {
+  max-width: none;
+  padding: 16px 18px;
+  border-left: 6px solid var(--risk-high);
+  background: #fdecee;
+  color: var(--ink);
+  font-weight: 600;
+  text-align: left;
+}
+
+.agencies-page form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.agencies-page form label {
+  grid-column: 1 / -1;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.agencies-page form input {
+  min-height: var(--touch);
+  padding: 10px 14px;
+  border: 2px solid var(--grey-200);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+
+.agencies-page form button {
+  min-height: var(--touch);
+  padding: 10px 28px;
+  border: 2px solid var(--brand-600);
+  border-radius: var(--pill);
+  background: var(--brand-600);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.agencies-page [role="status"] {
+  padding: 12px 14px;
+  border-left: 4px solid var(--risk-medium);
+  background: #fff7e6;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.agencies-page h2 {
+  margin: 36px 0 12px;
+  color: var(--brand-700);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* Contacts and sources as one joined list */
+.agencies-page ul {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--grey-200);
+  list-style: none;
+}
+
+.agencies-page li {
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--grey-200);
+  color: var(--ink);
+}
+
+.agencies-page small {
+  color: var(--muted);
+}
+
+/* ----- Sign in, My checks, Report form -----
+   Abay's SignIn/MyChecks and Chol's ReportForm have no CSS of their own,
+   so they are styled here to match the rest of the site. */
+.signin,
+.my-checks {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.my-checks {
+  max-width: 760px;
+}
+
+.signin h1,
+.my-checks h1,
+.my-checks h2,
+.report-box h2 {
+  margin: 0 0 20px;
+  color: var(--navy-800);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.signin h1,
+.my-checks h1 {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+.signin h1 {
+  text-align: center;
+}
+
+/* Phone / Team login switch, same look as the Job / Scholarship / Visa toggle */
+.signin-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: var(--pill);
+  background: var(--grey-100);
+}
+
+.signin-tabs button {
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--pill);
+  background: transparent;
+  color: var(--navy-800);
+  font-weight: 700;
+}
+
+.signin-tabs button[aria-selected="true"] {
+  background: var(--white);
+  color: var(--brand-700);
+  box-shadow: 0 2px 8px rgba(7, 26, 46, 0.12);
+}
+
+.signin form,
+.report-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signin label {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.signin input,
+.report-box input {
+  width: 100%;
+  min-height: var(--touch);
+  padding: 10px 14px;
+  border: 2px solid var(--grey-200);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--ink);
+}
+
+.report-box textarea {
+  min-height: 110px;
+}
+
+/* Main buttons look like .btn-primary */
+.signin form > button,
+.report-box form > button {
+  min-height: var(--touch);
+  padding: 12px 24px;
+  border: 2px solid var(--brand-600);
+  border-radius: var(--pill);
+  background: var(--brand-600);
+  color: var(--white);
+  font-weight: 700;
+}
+
+.signin form > button:not(:disabled):hover,
+.report-box form > button:not(:disabled):hover {
+  background: var(--brand-700);
+}
+
+/* Small text links: new code, other number */
+.signin-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.signin-links button {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--brand-700);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.signin-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.signin-error,
+.my-checks-error {
+  padding: 12px 14px;
+  border-left: 4px solid var(--risk-high);
+  background: #fdecee;
+  color: var(--risk-high);
+  font-weight: 700;
+}
+
+.signin-notice {
+  padding: 12px 14px;
+  border-left: 4px solid var(--risk-low);
+  background: #ecf8f0;
+  color: var(--ink);
+}
+
+/* My checks: title and sign-out on one line, then joined cards */
+.my-checks > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.my-checks > header h1 {
+  margin: 0;
+}
+
+.my-checks button {
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 2px solid var(--navy-800);
+  border-radius: var(--pill);
+  background: var(--white);
+  color: var(--navy-800);
+  font-weight: 700;
+}
+
+.my-checks-list {
+  margin: 0 0 20px;
+  padding: 0;
+  border-top: 1px solid var(--grey-200);
+  list-style: none;
+}
+
+.my-checks-list .check {
+  padding: 18px 20px;
+  border: 1px solid var(--grey-200);
+  border-top: 0;
+  border-left: 6px solid var(--risk-low);
+  background: var(--white);
+}
+
+.my-checks-list .check-suspicious {
+  border-left-color: var(--risk-medium);
+}
+
+.my-checks-list .check-high_risk {
+  border-left-color: var(--risk-high);
+}
+
+.my-checks-list .check time,
+.my-checks-list .check span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.my-checks-list .check-text {
+  margin: 8px 0 0;
+  color: var(--ink);
+}
+
+.my-checks-list .check-flags {
+  margin: 6px 0 0;
+  color: var(--red-600);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Delete account: red, kept apart at the bottom */
+.my-checks-danger {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--red-600);
+}
+
+.my-checks-danger h2 {
+  font-size: 1.3rem;
+}
+
+.my-checks-danger button {
+  margin: 0 8px 8px 0;
+  border-color: var(--risk-high);
+  color: var(--risk-high);
+}
+
+/* Report form under the result card */
+.report-box {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--grey-200);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.report-box h2 {
+  margin-bottom: 6px;
+  font-size: 1.35rem;
+}
+
+.report-box > p {
+  margin: 0 0 14px;
+  color: var(--muted);
 }
