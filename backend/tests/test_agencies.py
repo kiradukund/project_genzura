@@ -28,3 +28,9 @@ def test_name_found_once_list_exists(monkeypatch):
     body = r.get_json()
     assert body["status"] == "official_list"
     assert body["licensed"] is True
+
+
+def test_sources_are_listed():
+    body = _client().get("/api/agencies").get_json()
+    assert len(body["sources"]) == 2
+    assert all(s["url"].startswith("https://www.newtimes.co.rw/") for s in body["sources"])

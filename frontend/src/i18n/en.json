@@ -143,6 +143,7 @@
     "licensed": "This agency is on the official list.",
     "notLicensed": "not on any official list. No agency is licensed for jobs abroad yet.",
     "verifyTitle": "Verify with official contacts",
+    "sourcesTitle": "Sources",
     "asOf": "Information checked on",
     "loading": "Loading...",
     "error": "Could not load agency information."
