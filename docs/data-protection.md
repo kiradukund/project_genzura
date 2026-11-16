@@ -20,7 +20,7 @@ It is enforced by the National Cyber Security Authority (NCSA).
 | --- | --- |
 | Checked messages (`checks`) | Masked text only (`[PHONE]`, `[EMAIL]`, `[NAME]`), verdict, flags, channel |
 | User accounts (`users`) | Phone as a keyed hash (HMAC-SHA256), never the real number |
-| Sign-in codes (`otp_codes`) | Hashed, expire after 5 minutes |
+| Sign-in codes (`sms_codes`) | Hashed, expire after 5 minutes |
 | Admin accounts (`admin_users`) | Email + password hash |
 | Scam reports | Masked text and contact |
 | Partner API keys | SHA-256 hash only |
