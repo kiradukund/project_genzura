@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import Agencies from "./pages/Agencies";
 import Assess from "./pages/Assess";
 import MyChecks from "./pages/MyChecks";
+import Privacy from "./pages/Privacy";
 import SignIn from "./pages/SignIn";
 // import Trends from "./pages/Trends";
 
@@ -60,6 +61,8 @@ function goToSignIn() {
 
 // SignIn and MyChecks already have their own <main>, so they get a <div> frame.
 function SignInPage() {
+  const { t } = useI18n();
+
   // Already signed in? Skip the form.
   useEffect(() => {
     let cancelled = false;
@@ -76,6 +79,8 @@ function SignInPage() {
   return (
     <div id="top" className="section page">
       <SignIn onSignedIn={goAfterSignIn} />
+      {/* For first-time visitors: signing in also creates the account. */}
+      <p className="signin-new">{t("signInPage.newHere")}</p>
     </div>
   );
 }
@@ -99,6 +104,7 @@ export const ROUTES = {
   "/my-checks": MyChecksPage,
   "/admin": AdminPage,
   "/agencies": AgenciesPage,
+  "/privacy": Privacy,
   // "/trends": Trends,
 };
 

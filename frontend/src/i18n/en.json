@@ -176,7 +176,7 @@
     "directory": "Official contacts",
     "alreadyPaid": "Already paid?",
     "agencies": "Agencies",
-    "signIn": "Sign in",
+    "signIn": "Sign in / Create account",
     "home": "Back to home",
     "notFound": "Page not found"
   },
@@ -373,7 +373,50 @@
     "privacy": "Your screenshots never leave your phone. Personal details are removed before anything is stored.",
     "rights": "All rights reserved.",
     "made": "Made in Rwanda",
-    "top": "Back to top"
+    "top": "Back to top",
+    "privacyLink": "Privacy"
+  },
+  "signInPage": {
+    "newHere": "New here? Your account is created when you enter the code. We only keep a scrambled version of your number."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "updated": "Last updated: November 2026",
+    "intro": "Genzura helps you check offers before you pay. We keep as little about you as we can. This page explains what we keep, why, and how to have it deleted.",
+    "sections": {
+      "checks": {
+        "title": "When you check an offer",
+        "body": "We save the result and the message with phone numbers, emails and names replaced by [PHONE], [EMAIL] and [NAME]. We use these masked checks to count scam trends and improve the warnings. Screenshots and PDF files are read on your own phone or computer and are never uploaded. Only the text is sent to Genzura."
+      },
+      "links": {
+        "title": "Links in a message",
+        "body": "To check a website, Genzura looks up its address in public domain registries, for example to see how new the site is. Only the website address is looked up, never your message."
+      },
+      "account": {
+        "title": "If you create an account",
+        "body": "Your phone number is kept only as a scrambled code, never the real number. Sign-in codes are scrambled too and expire after 5 minutes. The code is sent by SMS through Africa's Talking. You can delete your account and all your saved checks at any time on the My checks page."
+      },
+      "alerts": {
+        "title": "Scam alerts by SMS",
+        "body": "To send you alerts we need your real phone number, so we keep it while you are subscribed. Reply STOP to any alert, or unsubscribe on the website, and your number is then deleted."
+      },
+      "channels": {
+        "title": "WhatsApp, USSD and SMS",
+        "body": "When you check an offer by WhatsApp, USSD or SMS, your number is used only to send the answer. It is not stored. Only the masked message is saved, as above."
+      },
+      "reports": {
+        "title": "When you report a scam",
+        "body": "The Genzura team reads every report before anything is used. Adding your contact is optional, and personal details in the report are masked."
+      },
+      "where": {
+        "title": "Where your data is kept",
+        "body": "Our database and website are hosted outside Rwanda. This is one more reason we keep so little and mask what we keep. Nothing is sold or shared for advertising."
+      },
+      "rights": {
+        "title": "Your rights",
+        "body": "Under Rwanda's Law N° 058/2021 on the protection of personal data and privacy, you can ask to see, correct or delete your data. Delete your account on the My checks page, or reply STOP to end alerts and delete your number."
+      }
+    }
   },
   "directory": {
     "title": "Official Verification Directory",

@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/#already-paid", key: "nav.alreadyPaid" },
   { href: "/directory", key: "nav.directory" },
   { href: "/#faq", key: "footer.faq" },
+  { href: "/privacy", key: "footer.privacyLink" },
 ];
 
 export default function Footer() {
