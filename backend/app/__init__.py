@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -6,7 +7,12 @@ from dotenv import load_dotenv
 def create_app():
     load_dotenv()
     app = Flask(__name__)
-    CORS(app)
+    # Login uses a cookie, so the browser must be allowed to send it to the API.
+    # Only the site's own address may do that (never "*").
+    origins = [o.strip() for o in os.getenv(
+        "FRONTEND_ORIGINS", "http://localhost:5173,https://genzura-web.onrender.com"
+    ).split(",") if o.strip()]
+    CORS(app, origins=origins, supports_credentials=True)
     
     from .routes import api_bp
     from .lookup import lookup_bp
