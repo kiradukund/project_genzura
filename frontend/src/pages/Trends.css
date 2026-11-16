@@ -1,0 +1,62 @@
+/* OWNER: Alier - Trending scams page. Uses the shared colours from styles.css. */
+
+.trends {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.trends h3 {
+  margin: 24px 0 8px;
+}
+
+.trends-based-on {
+  color: var(--gold-500);
+  font-weight: 700;
+  margin: 16px 0 4px;
+}
+
+.trends-empty {
+  padding: 14px 16px;
+  background: var(--navy-800);
+  border-left: 4px solid var(--gold-500);
+  border-radius: var(--radius);
+}
+
+.trends-bars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+/* Long Kinyarwanda labels wrap; the count stays on the right. */
+.trends-bar-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  overflow-wrap: anywhere;
+}
+
+.trends-bar {
+  height: 10px;
+  background: var(--navy-800);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trends-bar div {
+  height: 100%;
+  background: var(--gold-500);
+  border-radius: 999px;
+}
+
+.trends-error {
+  color: var(--risk-high);
+}
+
+.trends-privacy {
+  margin-top: 24px;
+  font-size: 0.85rem;
+}
