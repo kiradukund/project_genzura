@@ -90,3 +90,37 @@ def test_long_text_is_cut(env):
     sent, saved = env
     _post(_client(), _payload("a" * 5000))
     assert len(saved[0][3]) == 2000
+
+
+# ---- Language and offer type ----
+
+from app.whatsapp import detect_context, detect_language
+
+RW_SCAM = "Muraho, wemerewe akazi mu mahanga. Ohereza amafaranga 300000 kugira ngo ubone viza."
+
+
+def test_detects_kinyarwanda():
+    assert detect_language(RW_SCAM) == "rw"
+
+
+def test_english_stays_english():
+    assert detect_language("Pay the fee to get your job in Dubai") == "en"
+
+
+def test_detects_offer_type():
+    assert detect_context("Full scholarship at a UK university") == "scholarship"
+    assert detect_context("Guaranteed visa in 3 days") == "visa"
+    assert detect_context("Job in Dubai, visa included") == "job"
+
+
+def test_kinyarwanda_message_saved_as_rw(env):
+    sent, saved = env
+    _post(_client(), _payload(RW_SCAM))
+    assert saved[0][2] == "rw"
+    assert len(sent) == 1
+
+
+def test_scholarship_message_saved_with_context(env):
+    sent, saved = env
+    _post(_client(), _payload("Free scholarship, pay the application fee now"))
+    assert saved[0][1] == "scholarship"
