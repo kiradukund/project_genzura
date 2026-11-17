@@ -4,6 +4,8 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useI18n } from "../i18n";
 import { getStats } from "../api/admin.js";
+import { logout } from "../api/auth";
+import { navigate } from "../router";
 import ReportQueue from "../components/ReportQueue.jsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -34,6 +36,17 @@ export default function Admin() {
   const [stats, setStats] = useState(null);
   const [status, setStatus] = useState("loading");
   const [domains] = useState([]);
+  const [signingOut, setSigningOut] = useState(false);
+
+  // End the team session and go back to the sign-in page.
+  async function handleSignOut() {
+    setSigningOut(true);
+    try {
+      await logout();
+    } finally {
+      navigate("/signin");
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -115,6 +128,13 @@ export default function Admin() {
 
   return (
     <div className="admin">
+      {status !== "denied" && status !== "loading" && (
+        <div className="admin-signout">
+          <button type="button" onClick={handleSignOut} disabled={signingOut}>
+            {t("admin.signOut")}
+          </button>
+        </div>
+      )}
       <h2 className="section-title">{t("admin.title")}</h2>
       <p className="section-intro">{t("admin.intro")}</p>
 

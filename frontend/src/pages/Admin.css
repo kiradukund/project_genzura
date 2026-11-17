@@ -5,6 +5,11 @@
   color: #ffffff;
 }
 
+.admin-signout {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .admin h2 {
   text-align: center;
   color: #ffffff;
