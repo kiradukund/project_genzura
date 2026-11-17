@@ -40,6 +40,10 @@ MESSAGES = {
             "sensitive_info_request": "Asks for passport/ID/PIN",
             "blacklisted_entity": "Known scam company",
             "flagged_entity": "Suspicious company",
+            "suspicious_link": "Suspicious link",
+            "impersonates_official_site": "Copies an official name",
+            "hidden_redirect": "Short link to a bad site",
+            "new_domain": "Very new website",
         },
     },
     "rw": {
@@ -64,6 +68,10 @@ MESSAGES = {
             "sensitive_info_request": "Basaba pasiporo/ID/PIN",
             "blacklisted_entity": "Ikigo kizwiho uburiganya",
             "flagged_entity": "Ikigo gikekwaho uburiganya",
+            "suspicious_link": "Link ikemangwa",
+            "impersonates_official_site": "Bigana izina ry'ikigo cyemewe",
+            "hidden_redirect": "Link ngufi ijya ku rubuga rubi",
+            "new_domain": "Urubuga rushya cyane",
         },
     },
 }
