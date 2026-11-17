@@ -15,7 +15,7 @@ import Assess from "./pages/Assess";
 import MyChecks from "./pages/MyChecks";
 import Privacy from "./pages/Privacy";
 import SignIn from "./pages/SignIn";
-// import Trends from "./pages/Trends";
+import Trends from "./pages/Trends";
 
 // Pages from other files are wrapped so every page has the same <main> frame.
 function DirectoryPage() {
@@ -105,7 +105,7 @@ export const ROUTES = {
   "/admin": AdminPage,
   "/agencies": AgenciesPage,
   "/privacy": Privacy,
-  // "/trends": Trends,
+  "/trends": Trends,
 };
 
 function NotFound() {
