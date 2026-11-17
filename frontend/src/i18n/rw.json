@@ -101,6 +101,7 @@
   "auth": {},
   "myChecks": {},
   "admin": {
+    "signOut": "Sohoka",
     "title": "Ikibaho cy'amakuru y'ubugenzuzi",
     "intro": "Imibare ya none ivuye mu masuzuma yabitswe na Genzura.",
     "totalChecks": "Amasuzuma yose",

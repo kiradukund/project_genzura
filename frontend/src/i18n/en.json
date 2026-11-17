@@ -101,6 +101,7 @@
   "auth": {},
   "myChecks": {},
     "admin": {
+    "signOut": "Sign out",
     "title": "Admin intelligence dashboard",
     "intro": "Live figures from checks saved by Genzura.",
     "totalChecks": "Total checks",
