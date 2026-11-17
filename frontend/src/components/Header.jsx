@@ -19,10 +19,10 @@ const NAV = [
 const PAGE_LINKS = [
   { to: "/directory", key: "nav.directory" },
   // { to: "/assess", key: "nav.assess" },
-  // { to: "/trends", key: "nav.trends" },
-  // { to: "/agencies", key: "nav.agencies" },
-  // { to: "/my-checks", key: "nav.myChecks" },
-  // { to: "/signin", key: "nav.signIn" },
+  { to: "/trends", key: "trends.title" },
+  { to: "/agencies", key: "nav.agencies" },
+  // Signed-in people are sent on from /signin to /my-checks or /admin.
+  { to: "/signin", key: "nav.signIn" },
 ];
 
 // Highlight the menu link for the section currently on screen.

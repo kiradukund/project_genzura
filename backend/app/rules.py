@@ -1,6 +1,9 @@
 # OWNER: Abay
 import re
 
+from .domains import offline_flags
+from .links import link_flags
+
 # Each rule: id, weight (points added to the risk score), regex pattern
 RULES = [
     {
@@ -83,7 +86,12 @@ def evaluate(text, context="job"):
             score += rule["weight"]
 
     score = min(score, 100)
-    return {"risk_score": score, "verdict": verdict_for(score), "flags": flags}
+    result = {"risk_score": score, "verdict": verdict_for(score), "flags": flags}
+
+    # Links and website names (offline, so USSD and SMS stay fast)
+    for flag_id, weight in link_flags(text) + offline_flags(text):
+        result = add_flag(result, flag_id, weight)
+    return result
 
 
 def add_flag(result, flag_id, weight):

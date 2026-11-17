@@ -1,18 +1,21 @@
 // OWNER: Kuol - App shell and page routes
+import { useEffect } from "react";
+import { getSession } from "./api/auth";
 import BackToTop from "./components/BackToTop";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { I18nProvider, useI18n } from "./i18n";
 import Directory from "./pages/Directory";
 import Home from "./pages/Home";
-import { RouterProvider, useLocation } from "./router";
+import { RouterProvider, navigate, useLocation } from "./router";
 // Import each page here when its owner says it is ready:
+import Admin from "./pages/Admin";
+import Agencies from "./pages/Agencies";
 import Assess from "./pages/Assess";
-// import Trends from "./pages/Trends";
-// import Agencies from "./pages/Agencies";
-// import SignIn from "./pages/SignIn";
-// import MyChecks from "./pages/MyChecks";
-// import Admin from "./pages/Admin";
+import MyChecks from "./pages/MyChecks";
+import Privacy from "./pages/Privacy";
+import SignIn from "./pages/SignIn";
+import Trends from "./pages/Trends";
 
 // Pages from other files are wrapped so every page has the same <main> frame.
 function DirectoryPage() {
@@ -31,6 +34,65 @@ function AssessPage() {
   );
 }
 
+function AdminPage() {
+  return (
+    <main id="top" className="section page">
+      <Admin />
+    </main>
+  );
+}
+
+function AgenciesPage() {
+  return (
+    <main id="top" className="page agencies-page">
+      <Agencies />
+    </main>
+  );
+}
+
+// After signing in: the team goes to the dashboard, everyone else to their checks.
+function goAfterSignIn(session) {
+  navigate(session?.kind === "admin" ? "/admin" : "/my-checks");
+}
+
+function goToSignIn() {
+  navigate("/signin");
+}
+
+// SignIn and MyChecks already have their own <main>, so they get a <div> frame.
+function SignInPage() {
+  const { t } = useI18n();
+
+  // Already signed in? Skip the form.
+  useEffect(() => {
+    let cancelled = false;
+    getSession()
+      .then((session) => {
+        if (session && !cancelled) goAfterSignIn(session);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <div id="top" className="section page">
+      <SignIn onSignedIn={goAfterSignIn} />
+      {/* For first-time visitors: signing in also creates the account. */}
+      <p className="signin-new">{t("signInPage.newHere")}</p>
+    </div>
+  );
+}
+
+function MyChecksPage() {
+  return (
+    <div id="top" className="section page">
+      <MyChecks onSignedOut={goToSignIn} />
+    </div>
+  );
+}
+
 // One line per page. To plug in a finished page:
 //   1. uncomment its import above and its line below
 //   2. add its menu link in components/Header.jsx (PAGE_LINKS)
@@ -38,11 +100,12 @@ export const ROUTES = {
   "/": Home,
   "/directory": DirectoryPage,
   "/assess": AssessPage,
-  // "/trends": Trends,
-  // "/agencies": Agencies,
-  // "/signin": SignIn,
-  // "/my-checks": MyChecks,
-  // "/admin": Admin,
+  "/signin": SignInPage,
+  "/my-checks": MyChecksPage,
+  "/admin": AdminPage,
+  "/agencies": AgenciesPage,
+  "/privacy": Privacy,
+  "/trends": Trends,
 };
 
 function NotFound() {

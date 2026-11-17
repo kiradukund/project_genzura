@@ -25,7 +25,21 @@
     },
     "step": "Step"
   },
-  "trends": {},
+  "trends": {
+    "title": "Trending scams",
+    "intro": "The scam signs Genzura sees most often in offers people check. Knowing them helps you spot a fake offer first.",
+    "period": "Time period",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "basedOn": "Based on {n} checks",
+    "notEnough": "Not enough data yet. Trends appear once at least 20 offers have been checked.",
+    "flagsTitle": "Most common red flags",
+    "typesTitle": "Most checked offer types",
+    "noneYet": "Nothing has been seen often enough to show yet.",
+    "loading": "Loading trends...",
+    "error": "Could not load trends. Try again later.",
+    "privacy": "Counts only. No messages or personal details are shown."
+  },
   "assess": {
     "title": "Answer a few questions",
     "intro": "No message to paste? Answer 6 quick questions about the offer and Genzura will show how risky it is.",
@@ -143,6 +157,7 @@
     "licensed": "This agency is on the official list.",
     "notLicensed": "not on any official list. No agency is licensed for jobs abroad yet.",
     "verifyTitle": "Verify with official contacts",
+    "sourcesTitle": "Sources",
     "asOf": "Information checked on",
     "loading": "Loading...",
     "error": "Could not load agency information."
@@ -160,11 +175,15 @@
     "report": "Report a scam",
     "directory": "Official contacts",
     "alreadyPaid": "Already paid?",
+    "agencies": "Agencies",
+    "signIn": "Sign in / Create account",
     "home": "Back to home",
     "notFound": "Page not found"
   },
   "home": {
     "cta": "Check an offer now",
+    "reportTitle": "Report this offer",
+    "reportIntro": "Think it is a scam? Send it to the Genzura team. Your report helps us warn other young people.",
     "trust": "Free · Private · Results in seconds",
     "stepsTitle": "How it works",
     "steps": {
@@ -240,6 +259,17 @@
   "score": "Risk score",
   "flagsTitle": "Red Flags Found",
   "noFlags": "No red flags found.",
+  "pdfUpload": {
+    "button": "Upload PDF letter",
+    "hint": "Offer letter as a PDF? It is read on your phone and never uploaded.",
+    "reading": "Reading PDF...",
+    "scanned": "Scanned letter, reading the pages...",
+    "tooBig": "PDF must be under 10 MB.",
+    "notPdf": "Please choose a PDF file.",
+    "noText": "No text found in this PDF. Try a screenshot of the letter instead.",
+    "locked": "This PDF is password-protected. Take a screenshot of the letter instead.",
+    "failed": "Could not read this PDF. Try a screenshot or paste the text."
+  },
   "flags": {
     "upfront_fee": "Upfront payment requested",
     "guaranteed_outcome": "Guaranteed visa/job/scholarship claim",
@@ -248,7 +278,11 @@
     "chat_app_only": "Contact only through WhatsApp or Telegram",
     "sensitive_info_request": "Asks for passport/ID/PIN up front",
     "blacklisted_entity": "Names a company or contact known for scams",
-    "flagged_entity": "Names a company or contact reported as suspicious"
+    "flagged_entity": "Names a company or contact reported as suspicious",
+    "suspicious_link": "Suspicious link (short link, unusual website ending or fake government address)",
+    "impersonates_official_site": "Website or email copies the name of an official organisation",
+    "hidden_redirect": "Short link leads to a suspicious website",
+    "new_domain": "Website was created only recently"
   },
   "nextSteps": "What to do next",
   "actions": {
@@ -339,7 +373,50 @@
     "privacy": "Your screenshots never leave your phone. Personal details are removed before anything is stored.",
     "rights": "All rights reserved.",
     "made": "Made in Rwanda",
-    "top": "Back to top"
+    "top": "Back to top",
+    "privacyLink": "Privacy"
+  },
+  "signInPage": {
+    "newHere": "New here? Your account is created when you enter the code. We only keep a scrambled version of your number."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "updated": "Last updated: November 2026",
+    "intro": "Genzura helps you check offers before you pay. We keep as little about you as we can. This page explains what we keep, why, and how to have it deleted.",
+    "sections": {
+      "checks": {
+        "title": "When you check an offer",
+        "body": "We save the result and the message with phone numbers, emails and names replaced by [PHONE], [EMAIL] and [NAME]. We use these masked checks to count scam trends and improve the warnings. Screenshots and PDF files are read on your own phone or computer and are never uploaded. Only the text is sent to Genzura."
+      },
+      "links": {
+        "title": "Links in a message",
+        "body": "To check a website, Genzura looks up its address in public domain registries, for example to see how new the site is. Only the website address is looked up, never your message."
+      },
+      "account": {
+        "title": "If you create an account",
+        "body": "Your phone number is kept only as a scrambled code, never the real number. Sign-in codes are scrambled too and expire after 5 minutes. The code is sent by SMS through Africa's Talking. You can delete your account and all your saved checks at any time on the My checks page."
+      },
+      "alerts": {
+        "title": "Scam alerts by SMS",
+        "body": "To send you alerts we need your real phone number, so we keep it while you are subscribed. Reply STOP to any alert, or unsubscribe on the website, and your number is then deleted."
+      },
+      "channels": {
+        "title": "WhatsApp, USSD and SMS",
+        "body": "When you check an offer by WhatsApp, USSD or SMS, your number is used only to send the answer. It is not stored. Only the masked message is saved, as above."
+      },
+      "reports": {
+        "title": "When you report a scam",
+        "body": "The Genzura team reads every report before anything is used. Adding your contact is optional, and personal details in the report are masked."
+      },
+      "where": {
+        "title": "Where your data is kept",
+        "body": "Our database and website are hosted outside Rwanda. This is one more reason we keep so little and mask what we keep. Nothing is sold or shared for advertising."
+      },
+      "rights": {
+        "title": "Your rights",
+        "body": "Under Rwanda's Law N° 058/2021 on the protection of personal data and privacy, you can ask to see, correct or delete your data. Delete your account on the My checks page, or reply STOP to end alerts and delete your number."
+      }
+    }
   },
   "directory": {
     "title": "Official Verification Directory",

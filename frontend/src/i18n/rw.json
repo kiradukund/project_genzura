@@ -25,7 +25,21 @@
     },
     "step": "Intambwe"
   },
-  "trends": {},
+  "trends": {
+    "title": "Uburiganya bugezweho",
+    "intro": "Ibimenyetso by'uburiganya Genzura ibona kenshi mu matangazo abantu basuzuma. Kubimenya bigufasha kumenya itangazo ry'ibinyoma mbere.",
+    "period": "Igihe",
+    "last7": "Iminsi 7 ishize",
+    "last30": "Iminsi 30 ishize",
+    "basedOn": "Bishingiye ku masuzuma {n}",
+    "notEnough": "Nta makuru ahagije arahari. Ibigezweho bizagaragara amatangazo nibura 20 amaze gusuzumwa.",
+    "flagsTitle": "Ibimenyetso by'uburiganya bikunze kugaragara",
+    "typesTitle": "Amatangazo akunze gusuzumwa",
+    "noneYet": "Nta kintu kiragaragara kenshi bihagije ngo cyerekanwe.",
+    "loading": "Birimo gufunguka...",
+    "error": "Ntibyashobotse kubona ibigezweho. Uzongere ugerageze nyuma.",
+    "privacy": "Ni imibare gusa. Nta butumwa cyangwa amakuru bwite agaragazwa."
+  },
   "assess": {
     "title": "Subiza ibibazo bike",
     "intro": "Nta butumwa ufite bwo gushyiramo? Subiza ibibazo 6 byihuse ku itangazo, Genzura ikwereke urugero rw'ibyago.",
@@ -100,7 +114,20 @@
     "topFlags": "Ibimenyetso bikunze kugaragara",
     "trendingDomains": "Imbuga zikunze kugaragara",
     "noData": "Nta makuru arahari.",
-    "downloadCsv": "Kuramo CSV"
+    "downloadCsv": "Kuramo CSV",
+    "reportsTitle": "Raporo z'uburiganya zo gusuzuma",
+    "tab_pending": "Bitegereje",
+    "tab_approved": "Byemejwe",
+    "tab_rejected": "Byanzwe",
+    "colMessage": "Ubutumwa (amakuru bwite yahishwe)",
+    "colContact": "Aho kuvugana",
+    "colReceived": "Byakiriwe",
+    "colAction": "Igikorwa",
+    "notePlaceholder": "Icyitonderwa (si ngombwa)",
+    "approve": "Emeza",
+    "reject": "Anga",
+    "noReports": "Nta raporo ziri hano.",
+    "reportsError": "Ntibyashobotse gufungura raporo."
   },
   "report": {
     "placeholder": "Shyira hano ubutumwa ukeka",
@@ -130,6 +157,7 @@
     "licensed": "Iki kigo kiri ku rutonde rwemewe.",
     "notLicensed": "ntikiri ku rutonde urwo ari rwo rwose rwemewe. Nta kigo kirahabwa uruhushya rw'akazi ko hanze.",
     "verifyTitle": "Genzura ukoresheje aho kuvugana hemewe",
+    "sourcesTitle": "Inkomoko",
     "asOf": "Amakuru yagenzuwe ku wa",
     "loading": "Birimo gufunguka...",
     "error": "Ntibyashobotse kubona amakuru y'ibigo."
@@ -147,11 +175,15 @@
     "report": "Tanga raporo",
     "directory": "Aho kuvugana hemewe",
     "alreadyPaid": "Waramaze kwishyura?",
+    "agencies": "Ibigo",
+    "signIn": "Injira / Fungura konti",
     "home": "Subira ahabanza",
     "notFound": "Iyi paji ntibonetse"
   },
   "home": {
     "cta": "Suzuma itangazo nonaha",
+    "reportTitle": "Tanga raporo kuri iri tangazo",
+    "reportIntro": "Ukeka ko ari uburiganya? Bwohereze itsinda rya Genzura. Raporo yawe idufasha kuburira urundi rubyiruko.",
     "trust": "Ni ubuntu · Ibanga ryawe rirarinzwe · Igisubizo mu masegonda",
     "stepsTitle": "Uko bikora",
     "steps": {
@@ -227,6 +259,17 @@
   "score": "Urugero rw'ibyago",
   "flagsTitle": "Ibimenyetso by'uburiganya byabonetse",
   "noFlags": "Nta bimenyetso by'uburiganya byabonetse.",
+  "pdfUpload": {
+    "button": "Shyiraho ibaruwa ya PDF",
+    "hint": "Ibaruwa y'akazi iri muri PDF? Isomerwa kuri telefoni yawe, ntoherezwa ahandi.",
+    "reading": "Turimo gusoma PDF...",
+    "scanned": "Ibaruwa yafotowe, turimo gusoma impapuro...",
+    "tooBig": "PDF igomba kuba munsi ya MB 10.",
+    "notPdf": "Hitamo dosiye ya PDF.",
+    "noText": "Nta nyandiko ibonetse muri iyi PDF. Gerageza ifoto y'ibaruwa (screenshot) aho kuyikoresha.",
+    "locked": "Iyi PDF ifunze n'ijambo ry'ibanga. Fata ifoto y'ibaruwa (screenshot) aho kuyikoresha.",
+    "failed": "Ntibyashobotse gusoma iyi PDF. Gerageza ifoto (screenshot) cyangwa wandike ubutumwa."
+  },
   "flags": {
     "upfront_fee": "Barasaba kwishyura amafaranga mbere",
     "guaranteed_outcome": "Baguhamiriza viza, akazi cyangwa buruse 100%",
@@ -235,7 +278,11 @@
     "chat_app_only": "Bavugana nawe kuri WhatsApp cyangwa Telegram gusa",
     "sensitive_info_request": "Basaba pasiporo, indangamuntu cyangwa PIN mbere y'igihe",
     "blacklisted_entity": "Havugwamo ikigo cyangwa umuntu uzwiho uburiganya",
-    "flagged_entity": "Havugwamo ikigo cyangwa umuntu ukekwaho uburiganya"
+    "flagged_entity": "Havugwamo ikigo cyangwa umuntu ukekwaho uburiganya",
+    "suspicious_link": "Link ikemangwa (link ngufi, urubuga rufite iherezo ridasanzwe cyangwa aderesi ya leta y'impimbano)",
+    "impersonates_official_site": "Urubuga cyangwa imeli byigana izina ry'ikigo cyemewe",
+    "hidden_redirect": "Link ngufi ikujyana ku rubuga rukemangwa",
+    "new_domain": "Urubuga rwashyizweho vuba aha"
   },
   "nextSteps": "Icyo wakora ubu",
   "actions": {
@@ -329,7 +376,50 @@
     "privacy": "Amafoto yawe ntava kuri telefoni yawe. Amakuru bwite akurwamo mbere y'uko hagira ikibikwa.",
     "rights": "Uburenganzira bwose burasigasiwe.",
     "made": "Byakorewe mu Rwanda",
-    "top": "Subira hejuru"
+    "top": "Subira hejuru",
+    "privacyLink": "Ubuzima bwite"
+  },
+  "signInPage": {
+    "newHere": "Uri mushya? Konti yawe ifungurwa iyo winjije kode. Tubika gusa nimero yawe yahinduwe mu buryo budasomeka."
+  },
+  "privacy": {
+    "title": "Ubuzima bwite",
+    "updated": "Byavuguruwe bwa nyuma: Ugushyingo 2026",
+    "intro": "Genzura igufasha gusuzuma amatangazo mbere yo kwishyura. Tubika amakuru make ashoboka akwerekeyeho. Iyi paji isobanura ibyo tubika, impamvu tubibika, n'uko wasaba ko bisibwa.",
+    "sections": {
+      "checks": {
+        "title": "Iyo usuzumye itangazo",
+        "body": "Tubika igisubizo n'ubutumwa, aho nimero za telefoni, imeli n'amazina byasimbujwe [PHONE], [EMAIL] na [NAME]. Dukoresha aya masuzuma yahishwe mu kubara uko uburiganya buhagaze no kunoza imiburo. Amafoto na dosiye za PDF bisomerwa kuri telefoni cyangwa mudasobwa yawe kandi ntibyoherezwa ahandi. Inyandiko yonyine ni yo yoherezwa kuri Genzura."
+      },
+      "links": {
+        "title": "Links ziri mu butumwa",
+        "body": "Kugira ngo isuzume urubuga, Genzura ishakisha aderesi yarwo mu bitabo rusange byandikwamo imbuga (domain registries), urugero kugira ngo imenye niba urubuga ari rushya. Aderesi y'urubuga yonyine ni yo ishakishwa, ntabwo ari ubutumwa bwawe."
+      },
+      "account": {
+        "title": "Niba ufunguye konti",
+        "body": "Nimero ya telefoni yawe ibikwa gusa nka kode yahinduwe, ntabwo ari nimero nyayo. Kode zo kwinjira na zo zirahindurwa kandi zirangira nyuma y'iminota 5. Kode yoherezwa kuri SMS binyuze kuri Africa's Talking. Ushobora gusiba konti yawe n'amasuzuma yawe yose wabitse igihe icyo ari cyo cyose kuri paji ya Amasuzuma yanjye (My checks)."
+      },
+      "alerts": {
+        "title": "Amakuru y'uburiganya kuri SMS",
+        "body": "Kugira ngo tukoherereze amakuru y'uburiganya dukenera nimero yawe nyayo, bityo tuyibika igihe cyose ukiyiyandikishijeho. Subiza STOP ku butumwa ubwo ari bwo bwose bw'amakuru y'uburiganya, cyangwa wiyandukure ku rubuga, maze nimero yawe isibwe."
+      },
+      "channels": {
+        "title": "WhatsApp, USSD na SMS",
+        "body": "Iyo usuzumye itangazo ukoresheje WhatsApp, USSD cyangwa SMS, nimero yawe ikoreshwa gusa mu kukoherereza igisubizo. Ntibikwa. Ubutumwa bwahishwe bwonyine ni bwo bubikwa, nk'uko byavuzwe haruguru."
+      },
+      "reports": {
+        "title": "Iyo utanze raporo y'uburiganya",
+        "body": "Itsinda rya Genzura risoma buri raporo mbere y'uko hagira ikintu gikoreshwa. Gushyiramo aho twakubona si ngombwa, kandi amakuru bwite ari muri raporo arahishwa."
+      },
+      "where": {
+        "title": "Aho amakuru yawe abikwa",
+        "body": "Ububiko bwacu bw'amakuru n'urubuga rwacu biri hanze y'u Rwanda. Iyi ni indi mpamvu tubika amakuru make kandi tugahisha ayo tubika. Nta kintu kigurishwa cyangwa gisangizwa abandi ku mpamvu zo kwamamaza."
+      },
+      "rights": {
+        "title": "Uburenganzira bwawe",
+        "body": "Hakurikijwe Itegeko N° 058/2021 rirengera amakuru bwite n'ibanga ryayo, ushobora gusaba kureba, gukosora cyangwa gusiba amakuru yawe. Siba konti yawe kuri paji ya Amasuzuma yanjye (My checks), cyangwa usubize STOP kugira ngo uhagarike amakuru y'uburiganya maze nimero yawe isibwe."
+      }
+    }
   },
   "directory": {
     "title": "Urutonde rw'ibigo byemewe byo kugenzura amakuru",
