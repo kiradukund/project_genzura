@@ -8,6 +8,10 @@ Flask backend, PostgreSQL database, React (Vite) frontend.
 
 The free API sleeps when idle, so the first request can take about a minute.
 
+| Home | A real check result | Phone |
+|---|---|---|
+| ![Home page](docs/screenshots/home.jpg) | ![HIGH RISK result with the red flags found](docs/screenshots/check-result.png) | ![Home page on a phone](docs/screenshots/mobile.jpg) |
+
 ## Features
 
 | Feature | Status |
@@ -24,8 +28,9 @@ The free API sleeps when idle, so the first request can take about a minute.
 | "Already paid?" guide, Official Verification Directory, redesign, full Kinyarwanda | Done |
 | Partner API (`POST /v1/check`): API keys, daily limits | Done |
 | WhatsApp bot (webhook, signature check) | Built, needs a WhatsApp Business number to go live |
-| USSD, SMS results, scam alerts | In progress |
-| Trending scams page | In progress |
+| USSD menu, "send result to my phone" SMS, weekly scam alerts by SMS | Built and tested; live only in the Africa's Talking sandbox (a real shortcode needs a paid account) |
+| Trending scams page: most common red flags of the last 7 / 30 days (counts only) | Done |
+| Privacy page (what is kept, for how long, who processes it) | Done |
 | Link checks: short links, spam endings, fake government and look-alike sites (`irembo-gov.com`) | Done |
 | Domain trust: follows short links, flags websites registered in the last 90 days | Done (web and WhatsApp checks) |
 | PDF offer letters read in the browser (text and scanned), file never uploaded | Done |
@@ -41,6 +46,36 @@ The free API sleeps when idle, so the first request can take about a minute.
 | Kuol Akech Riak Kuol | Frontend lead & channels (USSD, SMS, alerts) | k.kuol@alustudent.com | k-kuol |
 | Alier Akuang Alier | Kinyarwanda, USSD/SMS texts, guided assessment, trending scams | a.piel@alustudent.com | apiel-max |
 | Didier Abizera | Verification Directory, admin dashboard, agency check, WhatsApp bot | d.abizera@alustudent.com | didier-abizera |
+
+## How it works
+
+```mermaid
+flowchart LR
+    U["Web browser<br/>(React + Vite)"] -->|HTTPS + login cookie| API
+    P["Feature phone<br/>USSD / SMS"] -->|Africa's Talking| API
+    W["WhatsApp"] -->|Meta webhook| API
+    X["Partner systems"] -->|X-API-Key| API
+
+    subgraph API["Flask API (genzura-api on Render)"]
+        R["rules.py<br/>weighted rules, EN + RW"] --> L["links.py + domains.py<br/>link and look-alike site checks"]
+        L --> K["lookup.py<br/>reported scam contacts"]
+        K --> M["redaction<br/>mask emails, phones, names"]
+    end
+
+    M -->|masked text + result only| DB[("PostgreSQL<br/>Neon")]
+    API -->|SMS codes, results, alerts| AT["Africa's Talking"]
+    L -.->|online: redirects, domain age| NET["Internet (RDAP)"]
+```
+
+1. A message comes in from the website, USSD, SMS, WhatsApp or a partner.
+2. The rule engine scores it (0 to 100) and lists the red flags. Links are checked offline
+   (short links, spam endings, sites copying official names such as `irembo-gov.com`) and, for web
+   and WhatsApp checks, online (where a short link really leads, how old the website is).
+3. Phones, emails and links are compared with approved scam reports, which are stored only as hashes.
+4. Personal details are masked, and only the masked copy and the result are saved.
+5. The user gets a verdict (low risk, suspicious, high risk), the reasons, and what to do next.
+
+Screenshots and PDF letters are read inside the browser; the files are never uploaded.
 
 ## Project structure
 
@@ -117,7 +152,7 @@ With the venv active, from `backend/`:
 
     pytest
 
-298 tests, one file per feature. All must pass before a pull request is opened.
+502 tests, one file per feature. All must pass before a pull request is opened.
 
 ## Run the frontend
 
@@ -170,6 +205,13 @@ Response `400`: `{ "error": "text is required" }` (also for an invalid `context`
 | `GET` | `/api/admin/reports` | Admin | Report queue (`?status=pending`) |
 | `POST` | `/api/admin/reports/<id>/approve` | Admin | Approve a report |
 | `POST` | `/api/admin/reports/<id>/reject` | Admin | Reject a report |
+| `GET` | `/api/trends` | Anyone | Most common red flags (`?days=7` or `30`), counts only |
+| `POST` | `/api/send-result` | Anyone | Text the result of a recent check to a phone |
+| `POST` | `/api/alerts/subscribe` | Anyone | Sign up for weekly scam alerts by SMS |
+| `POST` | `/api/alerts/unsubscribe` | Anyone | Stop alerts (the number is deleted) |
+| `POST` | `/api/alerts/send-weekly` | Scheduler | Send the weekly alert (needs `X-Cron-Token`) |
+| `POST` | `/api/ussd` | Africa's Talking | USSD menu (EN/RW) |
+| `POST` | `/api/sms/inbound` | Africa's Talking | Incoming SMS: check a message, STOP |
 | `GET`/`POST` | `/api/whatsapp` | WhatsApp | Webhook (verify / receive) |
 | `POST` | `/v1/check` | Partners | Partner API (needs `X-API-Key`) |
 
@@ -252,8 +294,18 @@ Environment variables on Render (`genzura-api`):
 | `FRONTEND_ORIGINS` | Optional: sites allowed to send login cookies (default: localhost + genzura-web) |
 | `AT_USERNAME`, `AT_API_KEY` | Africa's Talking (`sandbox` for now): SMS codes, USSD |
 | `DOMAIN_CHECKS_ONLINE` | Optional: `false` turns off the online link checks (redirects, domain age) |
+| `ALERTS_CRON_TOKEN` | Optional: turns on `/api/alerts/send-weekly` (not set yet) |
 | `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN` | WhatsApp bot (not set yet, so the bot is off) |
 
 `genzura-web` needs `VITE_API_URL` (the API address, set at build time).
 
-Migrations run on the live database: 002, 003, 004, 005, 007.
+Migrations run on the live database: 002 to 007 and 009 (008 has no tables).
+
+## Known limitations
+
+- **SMS and USSD** use the Africa's Talking sandbox: codes and results reach only the AT simulator, not real phones, until a paid account and shortcode are set up.
+- **WhatsApp bot** is built and tested but off: it needs a WhatsApp Business number from Meta.
+- **Data location:** the database is hosted by Neon in the United States. Rwanda's data protection law (Law 058/2021, Article 50) requires an NCSA certificate to store personal data abroad; a Rwandan host would remove this issue.
+- **Rules, not machine learning:** checks follow written rules, so a new kind of scam is missed until a rule is added. Approved reports help catch repeat scammers.
+- **Free hosting** sleeps when idle (about a minute for the first request).
+- **Login on Safari** may fail, because Safari blocks cookies between the site and the API on different domains.
