@@ -1,3 +1,4 @@
+  
 # Genzura
 
 Anti-fraud tool that helps young people in Rwanda check overseas job, scholarship and visa offers before they pay.
@@ -12,6 +13,26 @@ The free API sleeps when idle, so the first request can take about a minute.
 |---|---|---|
 | ![Home page](docs/screenshots/home.jpg) | ![HIGH RISK result with the red flags found](docs/screenshots/check-result.png) | ![Home page on a phone](docs/screenshots/mobile.jpg) |
 
+## Contents
+
+- [Features](#features)
+- [Team](#team)
+- [How it works](#how-it-works)
+- [Project structure](#project-structure)
+- [Who owns what](#who-owns-what)
+- [Prerequisites](#prerequisites)
+- [Set up the database](#set-up-the-database)
+- [Run the backend](#run-the-backend)
+- [Run the tests](#run-the-tests)
+- [Run the frontend](#run-the-frontend)
+- [API](#api)
+  - [All endpoints](#all-endpoints)
+  - [Partner API](#partner-api)
+- [Admin accounts](#admin-accounts)
+- [Git workflow](#git-workflow)
+- [Deployment](#deployment)
+- [Known limitations](#known-limitations)
+  
 ## Features
 
 | Feature | Status |
