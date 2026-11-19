@@ -4,7 +4,7 @@ Anti-fraud tool that helps young people in Rwanda check overseas job, scholarshi
 Flask backend, PostgreSQL database, React (Vite) frontend.
 
 **Live demo:** https://genzura-web.onrender.com
-**API:** https://genzura-api-f40h.onrender.com (`/health`)
+**API:** https://genzura-api-f40h.onrender.com/health (health check; the API itself has no home page)
 
 The free API sleeps when idle, so the first request can take about a minute.
 
