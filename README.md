@@ -1,3 +1,18 @@
+  
+# Genzura
+
+Anti-fraud tool that helps young people in Rwanda check overseas job, scholarship and visa offers before they pay.
+Flask backend, PostgreSQL database, React (Vite) frontend.
+
+**Live demo:** https://genzura-web.onrender.com
+**API:** https://genzura-api-f40h.onrender.com/health (health check; the API itself has no home page)
+
+The free API sleeps when idle, so the first request can take about a minute.
+
+| Home | A real check result | Phone |
+|---|---|---|
+| ![Home page](docs/screenshots/home.jpg) | ![HIGH RISK result with the red flags found](docs/screenshots/check-result.png) | ![Home page on a phone](docs/screenshots/mobile.jpg) |
+
 ## Contents
 
 - [Features](#features)
@@ -18,20 +33,6 @@
 - [Deployment](#deployment)
 - [Known limitations](#known-limitations)
   
-# Genzura
-
-Anti-fraud tool that helps young people in Rwanda check overseas job, scholarship and visa offers before they pay.
-Flask backend, PostgreSQL database, React (Vite) frontend.
-
-**Live demo:** https://genzura-web.onrender.com
-**API:** https://genzura-api-f40h.onrender.com/health (health check; the API itself has no home page)
-
-The free API sleeps when idle, so the first request can take about a minute.
-
-| Home | A real check result | Phone |
-|---|---|---|
-| ![Home page](docs/screenshots/home.jpg) | ![HIGH RISK result with the red flags found](docs/screenshots/check-result.png) | ![Home page on a phone](docs/screenshots/mobile.jpg) |
-
 ## Features
 
 | Feature | Status |
