@@ -40,7 +40,7 @@ The free API sleeps when idle, so the first request can take about a minute.
 | Scam check (`POST /api/check`): weighted rule engine, English + Kinyarwanda rules, known scam contacts flagged | Done |
 | Personal data masking (email, phone, names) before anything is stored | Done |
 | Screenshot reading (OCR) in the browser, image never uploaded | Done |
-| Guided assessment: 6 questions, risk level with reasons | Done |
+| Guided assessment (`/assess`): 6 questions, risk level with reasons; linked from the home page under the checker for people with no message to paste (#81) | Done |
 | Report a scam, admin review queue (approve/reject), audit log | Done |
 | Scam-contact lookup (phones, emails, links stored only as hashes) | Done |
 | Admin dashboard: real statistics, admin login | Done |
