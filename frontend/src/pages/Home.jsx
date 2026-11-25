@@ -104,6 +104,13 @@ export default function Home() {
           <div className="check-card">
             <Checker />
           </div>
+          {/* For people who cannot paste the message: the guided assessment (FR9). */}
+          <div className="assess-cta">
+            <p>{t("assess.intro")}</p>
+            <Link className="btn-outline btn-arrow" to="/assess">
+              {t("assess.title")}
+            </Link>
+          </div>
         </section>
 
         <section id="signs" className="section reveal" aria-labelledby="signs-title">
